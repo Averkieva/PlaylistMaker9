@@ -9,4 +9,7 @@
     <dimen name = "paddingRight">12dp</dimen>
     <dimen name = "paddingTop">19dp</dimen>
     <dimen name = "marginVertical">21dp</dimen>
+    <dimen name = "margin_top_and_button">24dp</dimen>
+    <dimen name = "margin_start">48dp</dimen>
+    <dimen name = "margin_top_and_button_2">0dp</dimen>
 </resources>

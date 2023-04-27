@@ -38,11 +38,7 @@ class SearchingActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) {
-                    clearButton.visibility = View.GONE
-                } else {
-                    clearButton.visibility = View.VISIBLE
-                }
+                clearButton.visibility = clearButtonVisibility(s)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -60,5 +56,12 @@ class SearchingActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         val searchQuery = savedInstanceState.getString(QUERY, "")
         inputEditText.setText(searchQuery)
+    }
+    private fun clearButtonVisibility(s: CharSequence?): Int {
+        return if (s.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 }
