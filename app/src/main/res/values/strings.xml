@@ -14,4 +14,7 @@
     <string name="sub"> Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="email">averkieva10012017@ya.ru</string>
     <string name="practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="track_title">Название трека</string>
+    <string name="track_artist">Исполнитель</string>
+    <string name="track_time">12:34</string>
 </resources>

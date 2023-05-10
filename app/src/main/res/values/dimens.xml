@@ -12,4 +12,9 @@
     <dimen name = "margin_top_and_button">24dp</dimen>
     <dimen name = "margin_start">48dp</dimen>
     <dimen name = "margin_top_and_button_2">0dp</dimen>
+    <dimen name = "width_and_height_pic_search">45dp</dimen>
+    <dimen name = "pudding_and_marginStart_in_search">5dp</dimen>
+    <dimen name = "pudding_and_layout_search">10dp</dimen>
+    <dimen name = "primary_text_size_11sp">11sp</dimen>
+    <dimen name = "cover_radius">2sp</dimen>
 </resources>

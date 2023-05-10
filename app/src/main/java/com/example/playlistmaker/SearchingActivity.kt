@@ -9,6 +9,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchingActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
@@ -20,6 +22,10 @@ class SearchingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_searching)
+        val recyclerView = findViewById<RecyclerView>(R.id.result_recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val tracksAdapter = TrackAdapter(tracks)
+        recyclerView.adapter = tracksAdapter
         val backButton = findViewById<ImageView>(R.id.returnButton)
         inputEditText = findViewById(R.id.inputEditText)
         backButton.setOnClickListener {
@@ -57,6 +63,7 @@ class SearchingActivity : AppCompatActivity() {
         val searchQuery = savedInstanceState.getString(QUERY, "")
         inputEditText.setText(searchQuery)
     }
+
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
