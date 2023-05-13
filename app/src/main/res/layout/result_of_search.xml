@@ -5,14 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/result_of_search_main_layout_style"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/for_text"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/track_pic"
-        android:layout_width="@dimen/width_and_height_pic_search"
-        android:layout_height="@dimen/width_and_height_pic_search"
-        android:layout_marginStart="@dimen/pudding_and_marginStart_in_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/search_placeholder" />
 
     <LinearLayout
@@ -26,6 +27,7 @@
         <TextView
             android:id="@+id/track_article"
             style="@style/result_of_search_title_style"
+            android:paddingTop="14dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/track_title" />
@@ -35,7 +37,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingEnd="@dimen/pudding_and_layout_search">
+            android:paddingEnd="14dp">
 
             <TextView
                 android:id="@+id/track_artist"
@@ -51,7 +53,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0"
-                android:padding="@dimen/pudding_and_marginStart_in_search"
                 android:src="@drawable/dot"
                 app:tint="?attr/colorSecondary" />
 
@@ -71,7 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/paddingRight"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="@dimen/icon_padding"
         android:src="@drawable/user"
         app:tint="?attr/colorSecondary" />
 

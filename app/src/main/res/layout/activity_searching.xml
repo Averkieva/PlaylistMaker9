@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingStart="@dimen/radius_and_margin_top"
-    android:background="?attr/colorPrimaryVariant"
+    android:background="?attr/colorSecondaryVariant"
 
     tools:context=".SearchingActivity">
 
@@ -14,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop = "14dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/radius_and_margin_top">
 
         <ImageView
             android:id="@+id/returnButton"
@@ -40,7 +40,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/radius_and_margin_top"
+        >
 
 
         <EditText
@@ -80,6 +82,5 @@
         android:id="@+id/result_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="24dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </LinearLayout>
