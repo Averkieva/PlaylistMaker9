@@ -5,11 +5,17 @@
       <map>
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/back.xml" value="0.121" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/cancel.xml" value="0.121" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/clear.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/dot.xml" value="0.1185" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1225" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/media.xml" value="0.1225" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/nothing_found_picture.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/placeholder.xml" value="0.1185" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/problems_with_loading.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/rounded_edittext.xml" value="0.121" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/search_2.xml" value="0.121" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/search_placeholder.xml" value="0.1185" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/share.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/user.xml" value="0.1185" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/activity_main.xml" value="0.165625" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/activity_mediateka.xml" value="0.17864583333333334" />

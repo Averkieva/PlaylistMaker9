@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?attr/colorSecondaryVariant"
+    android:orientation="vertical"
 
     tools:context=".SearchingActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop = "14dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal"
         android:paddingStart="@dimen/radius_and_margin_top">
 
@@ -28,9 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_start"
             android:layout_marginTop="@dimen/margin_top_and_button_2"
             android:layout_marginBottom="@dimen/margin_top_and_button_2"
-            android:layout_marginStart="@dimen/margin_start"
             android:fontFamily="@font/ys_display_medium"
             android:text="@string/search"
             android:textColor="?attr/colorOnPrimary"
@@ -41,8 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/radius_and_margin_top"
-        >
+        android:paddingStart="@dimen/radius_and_margin_top">
 
 
         <EditText
@@ -55,17 +54,19 @@
             android:background="@drawable/rounded_edittext"
             android:drawableStart="@drawable/search_2"
             android:drawablePadding="9dp"
-            android:drawableTint="?attr/colorPrimary"
+            app:drawableTint="?attr/colorPrimary"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/input_hint"
+            android:imeOptions="actionDone"
             android:inputType="text"
-            android:maxLines="1"
-            android:paddingStart="13dp"
             android:maxLength="60"
-            android:textSize = "@dimen/primary_text_size_16sp"
-            android:textColor="@color/black_1"
+            android:maxLines="1"
             android:minHeight="@dimen/margin_start"
+            android:paddingStart="13dp"
+            android:singleLine="true"
+            android:textColor="@color/black_1"
             android:textColorHint="?attr/colorPrimary"
+            android:textSize="@dimen/primary_text_size_16sp"
             app:cornerRadius="18dp" />
 
         <ImageView
@@ -76,11 +77,71 @@
             android:paddingEnd="30dp"
             android:src="@drawable/cancel"
             android:visibility="gone"
-            app:tint="?attr/colorPrimary"/>
+            app:tint="?attr/colorPrimary" />
     </FrameLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/result_recyclerView"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/result_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <ImageView
+            android:id="@+id/nothingFoundPicture"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="102dp"
+            android:src="@drawable/nothing_found_picture" />
+
+        <ImageView
+            android:id="@+id/problemsWithLoadingPicture"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="102dp"
+            android:src="@drawable/problems_with_loading" />
+
+        <TextView
+            android:id="@+id/nothingFoundText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="238dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center"
+            android:text="@string/nothing_found_text"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="19sp" />
+
+        <TextView
+            android:id="@+id/problemsWithLoadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="238dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center"
+            android:text="@string/problems_with_loading"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="19sp" />
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="350dp"
+            android:backgroundTint="?attr/colorOnPrimary"
+            android:fontFamily="@font/ys_display_medium"
+            android:text="@string/refreshText"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorPrimaryVariant"
+            android:textSize="14sp"
+            app:cornerRadius="54dp"/>
+    </FrameLayout>
 </LinearLayout>
