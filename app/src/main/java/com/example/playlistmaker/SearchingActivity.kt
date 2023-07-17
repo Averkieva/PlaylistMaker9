@@ -29,6 +29,11 @@ class SearchingActivity : AppCompatActivity() {
     private lateinit var refreshButton: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var tracksAdapter: TrackAdapter
+    private lateinit var searchHistoryAdapter: TrackAdapter
+    private lateinit var searchHistoryView: View
+    private lateinit var searchHistoryRecyclerView: RecyclerView
+    private lateinit var searchHistoryButton: Button
+    private val searchHistory = SearchHistory()
 
 
     companion object {
@@ -58,9 +63,63 @@ class SearchingActivity : AppCompatActivity() {
         refreshButton.visibility = View.GONE
         recyclerView = findViewById<RecyclerView>(R.id.result_recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.visibility = View.VISIBLE
         tracksAdapter = TrackAdapter(tracks)
+        searchHistoryAdapter = TrackAdapter(App.searchHistoryList)
         recyclerView.adapter = tracksAdapter
+        applicationContext.getSharedPreferences(SearchHistory.SEARCH_SHARED_PREFERENCE, MODE_PRIVATE)
+        searchHistoryView = findViewById(R.id.searchedText)
+        searchHistoryRecyclerView = findViewById(R.id.history_recyclerView)
+        searchHistoryRecyclerView.adapter = searchHistoryAdapter
+        searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this)
+        searchHistoryButton = findViewById(R.id.clearHistoryButton)
+        searchHistoryView.visibility = View.GONE
+        searchHistoryRecyclerView.visibility = View.GONE
+        searchHistoryButton.visibility = View.GONE
         inputEditText = findViewById(R.id.inputEditText)
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if(hasFocus && inputEditText.text.isEmpty() && App.searchHistoryList.isNotEmpty()){
+                searchHistoryView.visibility = View.VISIBLE
+                searchHistoryRecyclerView.visibility = View.VISIBLE
+                searchHistoryButton.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                nothingFoundPicture.visibility = View.GONE
+                nothingFoundText.visibility = View.GONE
+                problemsWithLoadingPicture.visibility = View.GONE
+                problemsWithLoadingText.visibility = View.GONE
+                refreshButton.visibility = View.GONE
+            }
+            else{
+                searchHistoryView.visibility = View.GONE
+                searchHistoryRecyclerView.visibility = View.GONE
+                searchHistoryButton.visibility = View.GONE
+            }
+        }
+        inputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (inputEditText.hasFocus() && p0?.isEmpty() == true && App.searchHistoryList.isNotEmpty()) {
+                    searchHistoryView.visibility = View.VISIBLE
+                    searchHistoryRecyclerView.visibility = View.VISIBLE
+                    searchHistoryButton.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                    nothingFoundPicture.visibility = View.GONE
+                    nothingFoundText.visibility = View.GONE
+                    problemsWithLoadingPicture.visibility = View.GONE
+                    problemsWithLoadingText.visibility = View.GONE
+                    refreshButton.visibility = View.GONE
+                } else {
+                    searchHistoryView.visibility = View.GONE
+                    searchHistoryRecyclerView.visibility = View.GONE
+                    searchHistoryButton.visibility = View.GONE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputEditText.text.isNotEmpty()){
@@ -111,6 +170,13 @@ class SearchingActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             this.finish()
         }
+        searchHistoryButton.setOnClickListener {
+            App.searchHistoryList.clear()
+            searchHistoryView.visibility = View.GONE
+            searchHistoryRecyclerView.visibility = View.GONE
+            searchHistoryButton.visibility = View.GONE
+            searchHistoryAdapter.notifyDataSetChanged()
+        }
         val clearButton = findViewById<ImageView>(R.id.cancel_button)
         clearButton.setOnClickListener {
             inputEditText.setText("")
@@ -118,6 +184,8 @@ class SearchingActivity : AppCompatActivity() {
             keyboard.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             inputEditText.clearFocus()
             tracks.clear()
+            tracksAdapter.notifyDataSetChanged()
+            recyclerView.visibility = View.VISIBLE
             nothingFoundPicture.visibility = View.GONE
             nothingFoundText.visibility = View.GONE
             problemsWithLoadingPicture.visibility = View.GONE

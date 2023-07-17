@@ -13,17 +13,21 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TrackAdapter(
+class TrackAdapter (
     val tracks: ArrayList<Track>
 ) : RecyclerView.Adapter<TracksViewHolder> () {
-
+    private val searchHistory = SearchHistory()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.result_of_search, parent, false)
         return TracksViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
+        App.getSharedPreferences()
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener{
+            searchHistory.editSearchHistory(tracks[position])
+        }
     }
 
     override fun getItemCount(): Int = tracks.size
@@ -36,8 +40,10 @@ class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
     private val artworkUrl100: ImageView = itemView.findViewById(R.id.track_pic)
     val corner = itemView.resources.getDimensionPixelSize(R.dimen.cover_radius)
+    var numberTrack:Long = 0
 
     fun bind(track: Track) {
+        numberTrack = track.trackID
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)

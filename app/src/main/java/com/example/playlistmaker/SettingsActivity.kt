@@ -1,11 +1,13 @@
 package com.example.playlistmaker
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +38,14 @@ class SettingsActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = (Uri.parse(getString(R.string.practicum_offer)))
             startActivity(intent)
+        }
+        val sharedPrefs = getSharedPreferences(MainActivity.PREFERENCE, MODE_PRIVATE)
+        val currentNight = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        themeSwitcher.isChecked = currentNight == Configuration.UI_MODE_NIGHT_YES
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            sharedPrefs.edit().putBoolean(MainActivity.CHOOSE_THEME_PREF, checked).apply()
         }
     }
 }
