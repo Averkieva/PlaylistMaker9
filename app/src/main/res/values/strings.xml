@@ -17,4 +17,7 @@
     <string name="track_title">Название трека</string>
     <string name="track_artist">Исполнитель</string>
     <string name="track_time">12:34</string>
+    <string name="nothing_found_text">Ничего не нашлось</string>
+    <string name="problems_with_loading">Проблемы со связью \n \n Загрузка не удалась. Проверьте \n подключение к интернету</string>
+    <string name="refreshText">Обновить</string>
 </resources>
