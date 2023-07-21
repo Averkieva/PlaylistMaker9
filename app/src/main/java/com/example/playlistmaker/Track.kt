@@ -5,10 +5,10 @@ data class Track(
     val artistName: String,
     val trackTimeMillis: Int,
     val artworkUrl100: String,
-    val trackID: Long
+    val trackId: Long
 ){
     override fun hashCode(): Int {
-        return this.trackID.hashCode()
+        return this.trackId.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -16,7 +16,7 @@ data class Track(
             return true
         if (other !is Track)
             return false
-        return this.trackID == other.trackID
+        return this.trackId == other.trackId
     }
 }
 

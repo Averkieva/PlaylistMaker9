@@ -90,7 +90,8 @@
             android:id="@+id/result_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:visibility = "gone"/>
 
         <ImageView
             android:id="@+id/nothingFoundPicture"
@@ -147,9 +148,12 @@
             app:cornerRadius="54dp"/>
     </FrameLayout>
         <LinearLayout
+            android:id = "@+id/hidingHistory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility = "visible"
+            >
             <TextView
                 android:id="@+id/searchedText"
                 android:layout_width="wrap_content"
@@ -161,6 +165,7 @@
                 android:text="@string/searchedText"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="19sp"
+                android:visibility = "gone"
                 />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/history_recyclerView"

@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistory : AppCompatActivity() {
+class SearchHistory  {
     companion object {
         const val SEARCH_SHARED_PREFERENCE = "search"
+        const val number_10 = 10
     }
     private val savedSearchHistory = App.getSharedPreferences()
 
@@ -15,7 +16,6 @@ class SearchHistory : AppCompatActivity() {
         var json = ""
         if (App.searchHistoryList.contains(newSearchHistoryTrack)) {
             App.searchHistoryList.remove(newSearchHistoryTrack)
-            App.searchHistoryList.add(0, newSearchHistoryTrack)
         }
         if (json.isNotEmpty()) {
             if (App.searchHistoryList.isEmpty() && savedSearchHistory.contains(SEARCH_SHARED_PREFERENCE)) {
@@ -23,7 +23,7 @@ class SearchHistory : AppCompatActivity() {
                 App.searchHistoryList = Gson().fromJson(json, a)
             }
         } else {
-            if (App.searchHistoryList.size < 10) {
+            if (App.searchHistoryList.size < number_10) {
                 App.searchHistoryList.add(0, newSearchHistoryTrack)
             } else {
                 App.searchHistoryList.removeAt(9)

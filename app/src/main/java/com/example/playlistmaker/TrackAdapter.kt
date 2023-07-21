@@ -23,7 +23,6 @@ class TrackAdapter (
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        App.getSharedPreferences()
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener{
             searchHistory.editSearchHistory(tracks[position])
@@ -43,7 +42,7 @@ class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     var numberTrack:Long = 0
 
     fun bind(track: Track) {
-        numberTrack = track.trackID
+        numberTrack = track.trackId
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)

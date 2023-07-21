@@ -8,10 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
@@ -33,6 +30,7 @@ class SearchingActivity : AppCompatActivity() {
     private lateinit var searchHistoryView: View
     private lateinit var searchHistoryRecyclerView: RecyclerView
     private lateinit var searchHistoryButton: Button
+    private lateinit var historyLinearLayout : LinearLayout
     private val searchHistory = SearchHistory()
 
 
@@ -76,6 +74,10 @@ class SearchingActivity : AppCompatActivity() {
         searchHistoryView.visibility = View.GONE
         searchHistoryRecyclerView.visibility = View.GONE
         searchHistoryButton.visibility = View.GONE
+        historyLinearLayout = findViewById(R.id.hidingHistory)
+        recyclerView.visibility = View.VISIBLE
+        historyLinearLayout.visibility = View.GONE
+        searchHistoryButton.visibility = View.VISIBLE
         inputEditText = findViewById(R.id.inputEditText)
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if(hasFocus && inputEditText.text.isEmpty() && App.searchHistoryList.isNotEmpty()){
@@ -88,6 +90,7 @@ class SearchingActivity : AppCompatActivity() {
                 problemsWithLoadingPicture.visibility = View.GONE
                 problemsWithLoadingText.visibility = View.GONE
                 refreshButton.visibility = View.GONE
+                historyLinearLayout.visibility = View.VISIBLE
             }
             else{
                 searchHistoryView.visibility = View.GONE
@@ -110,6 +113,7 @@ class SearchingActivity : AppCompatActivity() {
                     problemsWithLoadingPicture.visibility = View.GONE
                     problemsWithLoadingText.visibility = View.GONE
                     refreshButton.visibility = View.GONE
+                    historyLinearLayout.visibility = View.VISIBLE
                 } else {
                     searchHistoryView.visibility = View.GONE
                     searchHistoryRecyclerView.visibility = View.GONE
