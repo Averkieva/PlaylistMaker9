@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:visibility = "gone"/>
+            android:visibility = "visible"/>
 
         <ImageView
             android:id="@+id/nothingFoundPicture"
@@ -99,7 +99,8 @@
             android:layout_height="120dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="102dp"
-            android:src="@drawable/nothing_found_picture" />
+            android:src="@drawable/nothing_found_picture"
+            android:visibility = "gone"/>
 
         <ImageView
             android:id="@+id/problemsWithLoadingPicture"
@@ -107,7 +108,8 @@
             android:layout_height="120dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="102dp"
-            android:src="@drawable/problems_with_loading" />
+            android:src="@drawable/problems_with_loading"
+            android:visibility = "gone"/>
 
         <TextView
             android:id="@+id/nothingFoundText"
@@ -119,7 +121,8 @@
             android:gravity="center"
             android:text="@string/nothing_found_text"
             android:textColor="?attr/colorOnPrimary"
-            android:textSize="19sp" />
+            android:textSize="19sp"
+            android:visibility = "gone"/>
 
         <TextView
             android:id="@+id/problemsWithLoadingText"
@@ -131,7 +134,8 @@
             android:gravity="center"
             android:text="@string/problems_with_loading"
             android:textColor="?attr/colorOnPrimary"
-            android:textSize="19sp" />
+            android:textSize="19sp"
+            android:visibility = "gone"/>
 
         <Button
             android:id="@+id/refreshButton"
@@ -145,14 +149,15 @@
             android:textAllCaps="false"
             android:textColor="?attr/colorPrimaryVariant"
             android:textSize="14sp"
-            app:cornerRadius="54dp"/>
+            app:cornerRadius="54dp"
+            android:visibility = "gone"/>
     </FrameLayout>
         <LinearLayout
             android:id = "@+id/hidingHistory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility = "visible"
+            android:visibility = "gone"
             >
             <TextView
                 android:id="@+id/searchedText"
@@ -167,12 +172,18 @@
                 android:textSize="19sp"
                 android:visibility = "gone"
                 />
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/history_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </androidx.core.widget.NestedScrollView>
             <Button
                 android:id="@+id/clearHistoryButton"
                 android:layout_width="wrap_content"
@@ -186,6 +197,7 @@
                 android:textColor="?attr/colorPrimaryVariant"
                 android:textSize="14sp"
                 app:cornerRadius="54dp"
+                android:visibility = "gone"
                 />
         </LinearLayout>
     </FrameLayout>

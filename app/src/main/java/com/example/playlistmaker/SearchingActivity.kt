@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.App.Companion.getSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,37 +50,39 @@ class SearchingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.searchHistoryList = searchHistory.read()
         setContentView(R.layout.activity_searching)
+
         nothingFoundPicture = findViewById(R.id.nothingFoundPicture)
         nothingFoundText = findViewById(R.id.nothingFoundText)
         problemsWithLoadingPicture = findViewById(R.id.problemsWithLoadingPicture)
         problemsWithLoadingText = findViewById(R.id.problemsWithLoadingText)
         refreshButton = findViewById(R.id.refreshButton)
+        searchHistoryView = findViewById(R.id.searchedText)
+        recyclerView = findViewById(R.id.result_recyclerView)
+        searchHistoryRecyclerView = findViewById(R.id.history_recyclerView)
+        searchHistoryButton = findViewById(R.id.clearHistoryButton)
+        historyLinearLayout = findViewById(R.id.hidingHistory)
+        inputEditText = findViewById(R.id.inputEditText)
+
         nothingFoundPicture.visibility = View.GONE
         nothingFoundText.visibility = View.GONE
         problemsWithLoadingPicture.visibility = View.GONE
         problemsWithLoadingText.visibility = View.GONE
         refreshButton.visibility = View.GONE
-        recyclerView = findViewById<RecyclerView>(R.id.result_recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.visibility = View.VISIBLE
-        tracksAdapter = TrackAdapter(tracks)
-        searchHistoryAdapter = TrackAdapter(App.searchHistoryList)
-        recyclerView.adapter = tracksAdapter
-        applicationContext.getSharedPreferences(SearchHistory.SEARCH_SHARED_PREFERENCE, MODE_PRIVATE)
-        searchHistoryView = findViewById(R.id.searchedText)
-        searchHistoryRecyclerView = findViewById(R.id.history_recyclerView)
-        searchHistoryRecyclerView.adapter = searchHistoryAdapter
-        searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this)
-        searchHistoryButton = findViewById(R.id.clearHistoryButton)
         searchHistoryView.visibility = View.GONE
         searchHistoryRecyclerView.visibility = View.GONE
         searchHistoryButton.visibility = View.GONE
-        historyLinearLayout = findViewById(R.id.hidingHistory)
-        recyclerView.visibility = View.VISIBLE
         historyLinearLayout.visibility = View.GONE
-        searchHistoryButton.visibility = View.VISIBLE
-        inputEditText = findViewById(R.id.inputEditText)
+
+        tracksAdapter = TrackAdapter(tracks)
+        searchHistoryAdapter = TrackAdapter(App.searchHistoryList)
+        recyclerView.adapter = tracksAdapter
+        searchHistoryRecyclerView.adapter = searchHistoryAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this)
+
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if(hasFocus && inputEditText.text.isEmpty() && App.searchHistoryList.isNotEmpty()){
                 searchHistoryView.visibility = View.VISIBLE
@@ -118,6 +122,7 @@ class SearchingActivity : AppCompatActivity() {
                     searchHistoryView.visibility = View.GONE
                     searchHistoryRecyclerView.visibility = View.GONE
                     searchHistoryButton.visibility = View.GONE
+                    historyLinearLayout.visibility = View.GONE
                 }
             }
 
@@ -127,6 +132,7 @@ class SearchingActivity : AppCompatActivity() {
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputEditText.text.isNotEmpty()){
+                    historyLinearLayout.visibility = View.GONE
                     iTunesService.search(inputEditText.text.toString()).enqueue(object : Callback<TrackResponse> {
                         override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                             if (response.code() == 200) {
@@ -137,6 +143,7 @@ class SearchingActivity : AppCompatActivity() {
                                 problemsWithLoadingPicture.visibility = View.GONE
                                 problemsWithLoadingText.visibility = View.GONE
                                 refreshButton.visibility = View.GONE
+
                                 if (response.body()?.results?.isNotEmpty() == true) {
                                     tracks.addAll(response.body()?.results!!)
                                     tracksAdapter.notifyDataSetChanged()
@@ -166,7 +173,7 @@ class SearchingActivity : AppCompatActivity() {
                     })
 
                 }
-                    true
+                true
             }
             false
         }
@@ -179,7 +186,10 @@ class SearchingActivity : AppCompatActivity() {
             searchHistoryView.visibility = View.GONE
             searchHistoryRecyclerView.visibility = View.GONE
             searchHistoryButton.visibility = View.GONE
+            tracksAdapter.tracks.clear()
+            tracksAdapter.notifyDataSetChanged()
             searchHistoryAdapter.notifyDataSetChanged()
+
         }
         val clearButton = findViewById<ImageView>(R.id.cancel_button)
         clearButton.setOnClickListener {
@@ -188,7 +198,6 @@ class SearchingActivity : AppCompatActivity() {
             keyboard.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             inputEditText.clearFocus()
             tracks.clear()
-            tracksAdapter.notifyDataSetChanged()
             recyclerView.visibility = View.VISIBLE
             nothingFoundPicture.visibility = View.GONE
             nothingFoundText.visibility = View.GONE
