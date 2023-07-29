@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -8,12 +9,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.App.Companion.getSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +28,12 @@ class SearchingActivity : AppCompatActivity() {
     private lateinit var refreshButton: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var tracksAdapter: TrackAdapter
+    private lateinit var searchHistoryAdapter: TrackAdapter
+    private lateinit var searchHistoryView: View
+    private lateinit var searchHistoryRecyclerView: RecyclerView
+    private lateinit var searchHistoryButton: Button
+    private lateinit var historyLinearLayout : LinearLayout
+    private val searchHistory = SearchHistory()
 
 
     companion object {
@@ -45,25 +50,89 @@ class SearchingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.searchHistoryList = searchHistory.read()
         setContentView(R.layout.activity_searching)
+
         nothingFoundPicture = findViewById(R.id.nothingFoundPicture)
         nothingFoundText = findViewById(R.id.nothingFoundText)
         problemsWithLoadingPicture = findViewById(R.id.problemsWithLoadingPicture)
         problemsWithLoadingText = findViewById(R.id.problemsWithLoadingText)
         refreshButton = findViewById(R.id.refreshButton)
+        searchHistoryView = findViewById(R.id.searchedText)
+        recyclerView = findViewById(R.id.result_recyclerView)
+        searchHistoryRecyclerView = findViewById(R.id.history_recyclerView)
+        searchHistoryButton = findViewById(R.id.clearHistoryButton)
+        historyLinearLayout = findViewById(R.id.hidingHistory)
+        inputEditText = findViewById(R.id.inputEditText)
+
         nothingFoundPicture.visibility = View.GONE
         nothingFoundText.visibility = View.GONE
         problemsWithLoadingPicture.visibility = View.GONE
         problemsWithLoadingText.visibility = View.GONE
         refreshButton.visibility = View.GONE
-        recyclerView = findViewById<RecyclerView>(R.id.result_recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.visibility = View.VISIBLE
+        searchHistoryView.visibility = View.GONE
+        searchHistoryRecyclerView.visibility = View.GONE
+        searchHistoryButton.visibility = View.GONE
+        historyLinearLayout.visibility = View.GONE
+
         tracksAdapter = TrackAdapter(tracks)
+        searchHistoryAdapter = TrackAdapter(App.searchHistoryList)
         recyclerView.adapter = tracksAdapter
-        inputEditText = findViewById(R.id.inputEditText)
+        searchHistoryRecyclerView.adapter = searchHistoryAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if(hasFocus && inputEditText.text.isEmpty() && App.searchHistoryList.isNotEmpty()){
+                searchHistoryView.visibility = View.VISIBLE
+                searchHistoryRecyclerView.visibility = View.VISIBLE
+                searchHistoryButton.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                nothingFoundPicture.visibility = View.GONE
+                nothingFoundText.visibility = View.GONE
+                problemsWithLoadingPicture.visibility = View.GONE
+                problemsWithLoadingText.visibility = View.GONE
+                refreshButton.visibility = View.GONE
+                historyLinearLayout.visibility = View.VISIBLE
+            }
+            else{
+                searchHistoryView.visibility = View.GONE
+                searchHistoryRecyclerView.visibility = View.GONE
+                searchHistoryButton.visibility = View.GONE
+            }
+        }
+        inputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (inputEditText.hasFocus() && p0?.isEmpty() == true && App.searchHistoryList.isNotEmpty()) {
+                    searchHistoryView.visibility = View.VISIBLE
+                    searchHistoryRecyclerView.visibility = View.VISIBLE
+                    searchHistoryButton.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                    nothingFoundPicture.visibility = View.GONE
+                    nothingFoundText.visibility = View.GONE
+                    problemsWithLoadingPicture.visibility = View.GONE
+                    problemsWithLoadingText.visibility = View.GONE
+                    refreshButton.visibility = View.GONE
+                    historyLinearLayout.visibility = View.VISIBLE
+                } else {
+                    searchHistoryView.visibility = View.GONE
+                    searchHistoryRecyclerView.visibility = View.GONE
+                    searchHistoryButton.visibility = View.GONE
+                    historyLinearLayout.visibility = View.GONE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputEditText.text.isNotEmpty()){
+                    historyLinearLayout.visibility = View.GONE
                     iTunesService.search(inputEditText.text.toString()).enqueue(object : Callback<TrackResponse> {
                         override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                             if (response.code() == 200) {
@@ -74,6 +143,7 @@ class SearchingActivity : AppCompatActivity() {
                                 problemsWithLoadingPicture.visibility = View.GONE
                                 problemsWithLoadingText.visibility = View.GONE
                                 refreshButton.visibility = View.GONE
+
                                 if (response.body()?.results?.isNotEmpty() == true) {
                                     tracks.addAll(response.body()?.results!!)
                                     tracksAdapter.notifyDataSetChanged()
@@ -103,13 +173,23 @@ class SearchingActivity : AppCompatActivity() {
                     })
 
                 }
-                    true
+                true
             }
             false
         }
         val backButton = findViewById<ImageView>(R.id.returnButton)
         backButton.setOnClickListener {
             this.finish()
+        }
+        searchHistoryButton.setOnClickListener {
+            App.searchHistoryList.clear()
+            searchHistoryView.visibility = View.GONE
+            searchHistoryRecyclerView.visibility = View.GONE
+            searchHistoryButton.visibility = View.GONE
+            tracksAdapter.tracks.clear()
+            tracksAdapter.notifyDataSetChanged()
+            searchHistoryAdapter.notifyDataSetChanged()
+
         }
         val clearButton = findViewById<ImageView>(R.id.cancel_button)
         clearButton.setOnClickListener {
@@ -118,6 +198,7 @@ class SearchingActivity : AppCompatActivity() {
             keyboard.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             inputEditText.clearFocus()
             tracks.clear()
+            recyclerView.visibility = View.VISIBLE
             nothingFoundPicture.visibility = View.GONE
             nothingFoundText.visibility = View.GONE
             problemsWithLoadingPicture.visibility = View.GONE

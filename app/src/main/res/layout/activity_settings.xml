@@ -42,7 +42,8 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/themeSwitcher"
             style="@style/switch_style"
             android:paddingVertical="@dimen/marginVertical"
             android:paddingEnd="2dp"
