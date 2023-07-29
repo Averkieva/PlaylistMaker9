@@ -22,4 +22,13 @@
     <string name="refreshText">Обновить</string>
     <string name="searchedText">Вы искали</string>
     <string name="clearHistory">Очистить историю</string>
+    <string name="trackTime">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="albumName">Название альбома</string>
+    <string name="yearNumber">1703</string>
+    <string name="genreName">Какой-то жанр</string>
+    <string name="countryName">Лучшая страна</string>
 </resources>

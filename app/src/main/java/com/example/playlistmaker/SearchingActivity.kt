@@ -33,7 +33,7 @@ class SearchingActivity : AppCompatActivity() {
     private lateinit var searchHistoryRecyclerView: RecyclerView
     private lateinit var searchHistoryButton: Button
     private lateinit var historyLinearLayout : LinearLayout
-    private val searchHistory = SearchHistory()
+     val searchHistory = SearchHistory()
 
 
     companion object {
