@@ -15,4 +15,14 @@
     <dimen name = "pudding_and_layout_search">10dp</dimen>
     <dimen name = "primary_text_size_11sp">11sp</dimen>
     <dimen name = "cover_radius">2dp</dimen>
+    <dimen name = "primary_text_size_14sp">14sp</dimen>
+    <dimen name = "audio_margin_top">17dp</dimen>
+    <dimen name = "audio_margin_top_2">30dp</dimen>
+    <dimen name = "constraintGuide_begin_end">24dp</dimen>
+    <dimen name = "margin_top_player_cover">82dp</dimen>
+    <dimen name = "margin_top_artist_name">12dp</dimen>
+    <dimen name = "margin_top_buttons">54dp</dimen>
+    <dimen name = "margin_top_play_button">36dp</dimen>
+    <dimen name = "margin_top_timer">4dp</dimen>
+    <dimen name = "height_view">20dp</dimen>
 </resources>

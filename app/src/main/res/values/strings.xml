@@ -31,4 +31,7 @@
     <string name="yearNumber">1703</string>
     <string name="genreName">Какой-то жанр</string>
     <string name="countryName">Лучшая страна</string>
+    <string name="unknownTrack">Unknown Track</string>
+    <string name="unknownArtist">Unknown Artist</string>
+    <string name="unknownAlbum">Unknown Album</string>
 </resources>

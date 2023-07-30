@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SearchingActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
@@ -34,7 +38,6 @@ class SearchingActivity : AppCompatActivity() {
     private lateinit var searchHistoryButton: Button
     private lateinit var historyLinearLayout : LinearLayout
      val searchHistory = SearchHistory()
-
 
     companion object {
         const val QUERY = "QUERY"
@@ -76,8 +79,13 @@ class SearchingActivity : AppCompatActivity() {
         searchHistoryButton.visibility = View.GONE
         historyLinearLayout.visibility = View.GONE
 
-        tracksAdapter = TrackAdapter(tracks)
-        searchHistoryAdapter = TrackAdapter(App.searchHistoryList)
+        tracksAdapter = TrackAdapter(tracks){
+            clicker(it)
+        }
+        searchHistoryAdapter = TrackAdapter(App.searchHistoryList){
+            clicker(it)
+            searchHistoryAdapter.notifyDataSetChanged()
+        }
         recyclerView.adapter = tracksAdapter
         searchHistoryRecyclerView.adapter = searchHistoryAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -283,6 +291,23 @@ class SearchingActivity : AppCompatActivity() {
                 refreshButton.setOnClickListener { search(inputEditText) }
             }
         })
+    }
+    private fun clicker(item: Track) {
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra("Track Name", item.trackName)
+        intent.putExtra("Artist Name", item.artistName)
+        val trackTime = SimpleDateFormat(
+            "mm:ss",
+            Locale.getDefault()
+        ).format(item.trackTimeMillis)
+        intent.putExtra("Track Time", trackTime)
+        intent.putExtra("Album", item.collectionName)
+        intent.putExtra("Year", item.releaseDate)
+        intent.putExtra("Genre", item.primaryGenreName)
+        intent.putExtra("Country", item.country)
+        intent.putExtra("Cover", item.artworkUrl100)
+        this.startActivity(intent)
+        searchHistory.editSearchHistory(item)
     }
 
 }

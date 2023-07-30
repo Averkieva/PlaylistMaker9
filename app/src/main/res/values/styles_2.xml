@@ -83,4 +83,26 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:ellipsize">end</item>
     </style>
+
+    <style name="audio_player_left_side">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/radius_and_margin_top</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/colorSecondaryLight</item>
+        <item name="android:textSize">@dimen/primary_text_size_14sp</item>
+    </style>
+
+    <style name="audio_player_right_side">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">@dimen/radius_and_margin_top</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/primary_text_size_14sp</item>
+    </style>
 </resources>
