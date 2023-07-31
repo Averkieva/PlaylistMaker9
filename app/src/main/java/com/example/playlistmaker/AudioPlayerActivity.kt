@@ -28,6 +28,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         const val KEY_TRACK_GENRE = "Genre"
         const val KEY_TRACK_COUNTRY = "Country"
         const val KEY_TRACK_COVER = "Cover"
+        const val year = 4
     }
 
 
@@ -39,13 +40,13 @@ class AudioPlayerActivity : AppCompatActivity() {
             finish()
         }
 
-        audioPlayerTrackName.text = intent.extras?.getString(KEY_TRACK_NAME) ?: "Unknown Track"
-        audioPlayerArtistName.text = intent.extras?.getString(KEY_TRACK_ARTIST) ?: "Unknown Artist"
-        audioPlayerTime.text = intent.extras?.getString(KEY_TRACK_TIME) ?: "12:34"
-        audioPlayerAlbumName.text = intent.extras?.getString(KEY_TRACK_ALBUM) ?: "Unknown Album"
-        audioPlayerYearNumber.text = (intent.extras?.getString(KEY_TRACK_YEAR) ?: "Year").take(4)
-        audioPlayerGenreName.text = intent.extras?.getString(KEY_TRACK_GENRE) ?: "Unknown Genre"
-        audioPlayerCountryName.text = intent.extras?.getString(KEY_TRACK_COUNTRY) ?: "Unknown Country"
+        audioPlayerTrackName.text = intent.extras?.getString(KEY_TRACK_NAME) ?: getString(R.string.unknownTrack)
+        audioPlayerArtistName.text = intent.extras?.getString(KEY_TRACK_ARTIST) ?: getString(R.string.unknownArtist)
+        audioPlayerTime.text = intent.extras?.getString(KEY_TRACK_TIME) ?: getString(R.string.track_time)
+        audioPlayerAlbumName.text = intent.extras?.getString(KEY_TRACK_ALBUM) ?: getString(R.string.unknownAlbum)
+        audioPlayerYearNumber.text = (intent.extras?.getString(KEY_TRACK_YEAR) ?: getString(R.string.unknownYear)).take(year)
+        audioPlayerGenreName.text = intent.extras?.getString(KEY_TRACK_GENRE) ?: getString(R.string.unknownGenre)
+        audioPlayerCountryName.text = intent.extras?.getString(KEY_TRACK_COUNTRY) ?: getString(R.string.unknownCountry)
 
         val image = (intent.extras?.getString(KEY_TRACK_COVER))
 

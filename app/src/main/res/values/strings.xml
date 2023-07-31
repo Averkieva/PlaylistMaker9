@@ -34,4 +34,7 @@
     <string name="unknownTrack">Unknown Track</string>
     <string name="unknownArtist">Unknown Artist</string>
     <string name="unknownAlbum">Unknown Album</string>
+    <string name="unknownYear">Year</string>
+    <string name="unknownGenre">Unknown Genre</string>
+    <string name="unknownCountry">Unknown Country</string>
 </resources>

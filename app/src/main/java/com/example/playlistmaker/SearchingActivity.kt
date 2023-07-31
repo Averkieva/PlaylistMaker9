@@ -294,18 +294,18 @@ class SearchingActivity : AppCompatActivity() {
     }
     private fun clicker(item: Track) {
         val intent = Intent(this, AudioPlayerActivity::class.java)
-        intent.putExtra("Track Name", item.trackName)
-        intent.putExtra("Artist Name", item.artistName)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_NAME, item.trackName)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_ARTIST, item.artistName)
         val trackTime = SimpleDateFormat(
             "mm:ss",
             Locale.getDefault()
         ).format(item.trackTimeMillis)
-        intent.putExtra("Track Time", trackTime)
-        intent.putExtra("Album", item.collectionName)
-        intent.putExtra("Year", item.releaseDate)
-        intent.putExtra("Genre", item.primaryGenreName)
-        intent.putExtra("Country", item.country)
-        intent.putExtra("Cover", item.artworkUrl100)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_TIME, trackTime)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_ALBUM, item.collectionName)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_YEAR, item.releaseDate)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_GENRE, item.primaryGenreName)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_COUNTRY, item.country)
+        intent.putExtra(AudioPlayerActivity.KEY_TRACK_COVER, item.artworkUrl100)
         this.startActivity(intent)
         searchHistory.editSearchHistory(item)
     }

@@ -18,7 +18,6 @@ import kotlin.collections.ArrayList
 class TrackAdapter(
     val tracks: ArrayList<Track>,  private val clickListener:Click
 ) : RecyclerView.Adapter<TracksViewHolder>() {
-    private val searchingActivity = SearchingActivity()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.result_of_search, parent, false)
