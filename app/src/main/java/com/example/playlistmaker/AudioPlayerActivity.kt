@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -55,6 +56,8 @@ class AudioPlayerActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(image)
                 .placeholder(R.drawable.audio_player_cover)
+                .centerCrop()
+                .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.icon_padding)))
                 .into(audioPlayerCover)
         }
 
