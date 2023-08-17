@@ -96,9 +96,23 @@
             android:background = "@drawable/round2"
             app:layout_constraintStart_toStartOf="@+id/left_guideline"
             app:layout_constraintTop_toBottomOf="@+id/audioPlayerArtistName"
-            app:srcCompat="@drawable/audio_player_play"
+            app:srcCompat="@drawable/play_button"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-            app:tint="?attr/colorOnPrimary" />
+            app:tint="?attr/colorOnPrimary"
+            android:visibility="visible"/>
+        <ImageButton
+            android:id = "@+id/audioPlayerPauseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_top_play_button"
+            android:background = "@drawable/round2"
+            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/audioPlayerArtistName"
+            app:srcCompat="@drawable/audio_player_pause"
+            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:tint="?attr/colorOnPrimary"
+            android:visibility="gone"
+            />
 
         <ImageButton
             android:id="@+id/audioPlayerFavouriteButton"

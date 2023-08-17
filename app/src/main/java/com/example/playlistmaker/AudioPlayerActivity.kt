@@ -1,14 +1,26 @@
 package com.example.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.text.SimpleDateFormat
 
 class AudioPlayerActivity : AppCompatActivity() {
+
+    enum class StatesOfPlaying{
+        STATE_DEFAULT,
+        STATE_PREPARED,
+        STATE_PLAYING,
+        STATE_PAUSED
+    }
 
     private lateinit var audioPlayerTrackName:TextView
     private lateinit var audioPlayerArtistName:TextView
@@ -19,6 +31,14 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var audioPlayerCountryName:TextView
     private lateinit var audioPlayerCover:ImageView
     private lateinit var audioPlayerBackButton:ImageButton
+    private lateinit var audioPlayerPlayButton:ImageButton
+    private lateinit var audioPlayerPauseButton:ImageButton
+    private lateinit var audioPlayerTrackTimer:TextView
+
+    private val mediaPlayer = MediaPlayer()
+    private var mainThreadHandler: Handler? = null
+    private var statesOfPlaying = StatesOfPlaying.STATE_DEFAULT
+    var time = ""
 
     companion object{
         const val KEY_TRACK_NAME = "Track Name"
@@ -30,6 +50,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         const val KEY_TRACK_COUNTRY = "Country"
         const val KEY_TRACK_COVER = "Cover"
         const val year = 4
+        const val URL = "Url"
+        const val AUDIO_DELAY_MILLIS = 100L
     }
 
 
@@ -37,6 +59,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.audio_player)
         initViews()
+        audioPlayerPlayButton.setOnClickListener { playBackControl() }
+        audioPlayerPauseButton.setOnClickListener { playBackControl() }
         audioPlayerBackButton.setOnClickListener {
             finish()
         }
@@ -61,8 +85,84 @@ class AudioPlayerActivity : AppCompatActivity() {
                 .into(audioPlayerCover)
         }
 
-
+        val url = intent.extras?.getString(URL)
+        if (!url.isNullOrEmpty())
+            preparePlayer(url)
     }
+    private fun preparePlayer(url: String){
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener{
+            audioPlayerPlayButton.isEnabled = true
+            statesOfPlaying = StatesOfPlaying.STATE_PREPARED
+            audioPlayerPlayButton.visibility = View.VISIBLE
+            audioPlayerPauseButton.visibility = View.GONE
+        }
+        mediaPlayer.setOnCompletionListener{
+            statesOfPlaying = StatesOfPlaying.STATE_PREPARED
+            audioPlayerPlayButton.visibility = View.VISIBLE
+            audioPlayerPauseButton.visibility = View.GONE
+        }
+    }
+
+    private fun startPlayer(){
+        mediaPlayer.start()
+        statesOfPlaying = StatesOfPlaying.STATE_PLAYING
+        audioPlayerPlayButton.visibility = View.GONE
+        audioPlayerPauseButton.visibility = View.VISIBLE
+        mainThreadHandler?.post(duration())
+    }
+
+    private fun pausePlayer(){
+        super.onPause()
+        mediaPlayer.pause()
+        statesOfPlaying = StatesOfPlaying.STATE_PAUSED
+        audioPlayerPlayButton.visibility = View.VISIBLE
+        audioPlayerPauseButton.visibility = View.GONE
+    }
+
+    private fun playBackControl(){
+        when (statesOfPlaying){
+            StatesOfPlaying.STATE_PLAYING->{
+                pausePlayer()
+            }
+            StatesOfPlaying.STATE_PREPARED, StatesOfPlaying.STATE_PAUSED->{
+                startPlayer()
+            }
+            else->{}
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (mediaPlayer.isPlaying)
+            mediaPlayer.pause()
+        statesOfPlaying = StatesOfPlaying.STATE_PAUSED
+        audioPlayerPlayButton.visibility = View.VISIBLE
+        audioPlayerPauseButton.visibility = View.GONE
+    }
+
+    private fun duration():Runnable{
+        return object:Runnable{
+            override fun run(){
+                if (statesOfPlaying==StatesOfPlaying.STATE_PLAYING){
+                    time = SimpleDateFormat("mm:ss").format(mediaPlayer.currentPosition)
+                    audioPlayerTrackTimer.text = time
+                    mainThreadHandler?.postDelayed(this, AUDIO_DELAY_MILLIS)
+                }
+                else{
+                    audioPlayerTrackTimer.text = "00:00"
+                    mainThreadHandler?.post(this)
+                }
+            }
+        }
+    }
+
     private fun initViews(){
         audioPlayerTrackName = findViewById(R.id.audioPlayerTrackName)
         audioPlayerArtistName = findViewById(R.id.audioPlayerArtistName)
@@ -73,5 +173,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         audioPlayerCountryName = findViewById(R.id.audioPlayerCountryName)
         audioPlayerCover = findViewById(R.id.audioPlayerCover)
         audioPlayerBackButton = findViewById(R.id.audioPlayerBackButton)
+        audioPlayerPlayButton = findViewById(R.id.audioPlayerPlayButton)
+        audioPlayerPauseButton = findViewById(R.id.audioPlayerPauseButton)
+        audioPlayerTrackTimer = findViewById(R.id.audioPlayerTrackTimer)
+        mainThreadHandler = Handler(Looper.getMainLooper())
     }
 }
