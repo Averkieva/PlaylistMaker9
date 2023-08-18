@@ -79,9 +79,6 @@
             android:visibility="gone"
             app:tint="?attr/colorPrimary" />
     </FrameLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <ProgressBar android:id="@+id/progressBar"
             android:layout_width="44dp"
@@ -160,7 +157,6 @@
             android:textSize="14sp"
             app:cornerRadius="54dp"
             android:visibility = "gone"/>
-    </FrameLayout>
         <LinearLayout
             android:id = "@+id/hidingHistory"
             android:layout_width="match_parent"
