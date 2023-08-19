@@ -37,7 +37,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private val mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler? = null
     private var statesOfPlaying = StatesOfPlaying.STATE_DEFAULT
-    private var timeRunnable: Runnable = Runnable {}
+    private val timeRunnable: Runnable = Runnable { duration() }
     var time = ""
 
     companion object {
@@ -123,6 +123,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         mediaPlayer.pause()
         statesOfPlaying = StatesOfPlaying.STATE_PAUSED
         audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+        mainThreadHandler?.removeCallbacks(timeRunnable)
     }
 
     private fun playBackControl() {
@@ -151,12 +152,12 @@ class AudioPlayerActivity : AppCompatActivity() {
             mediaPlayer.pause()
         statesOfPlaying = StatesOfPlaying.STATE_PAUSED
         audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+        mainThreadHandler?.removeCallbacks(timeRunnable)
     }
 
     private fun duration() {
         time = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
         audioPlayerTrackTimer.text = time
-        timeRunnable = Runnable { duration() }
         mainThreadHandler?.postDelayed(timeRunnable, AUDIO_DELAY_MILLIS)
     }
 
