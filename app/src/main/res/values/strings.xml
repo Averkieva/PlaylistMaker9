@@ -16,10 +16,25 @@
     <string name="practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
     <string name="track_title">Название трека</string>
     <string name="track_artist">Исполнитель</string>
-    <string name="track_time">12:34</string>
+    <string name="track_time">00:00</string>
     <string name="nothing_found_text">Ничего не нашлось</string>
     <string name="problems_with_loading">Проблемы со связью \n \n Загрузка не удалась. Проверьте \n подключение к интернету</string>
     <string name="refreshText">Обновить</string>
     <string name="searchedText">Вы искали</string>
     <string name="clearHistory">Очистить историю</string>
+    <string name="trackTime">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="albumName">Название альбома</string>
+    <string name="yearNumber">1703</string>
+    <string name="genreName">Какой-то жанр</string>
+    <string name="countryName">Лучшая страна</string>
+    <string name="unknownTrack">Unknown Track</string>
+    <string name="unknownArtist">Unknown Artist</string>
+    <string name="unknownAlbum">Unknown Album</string>
+    <string name="unknownYear">Year</string>
+    <string name="unknownGenre">Unknown Genre</string>
+    <string name="unknownCountry">Unknown Country</string>
 </resources>

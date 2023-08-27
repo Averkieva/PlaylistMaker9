@@ -1,8 +1,10 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,39 +15,46 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TrackAdapter (
-    val tracks: ArrayList<Track>
-) : RecyclerView.Adapter<TracksViewHolder> () {
-    private val searchHistory = SearchHistory()
+class TrackAdapter(
+    val tracks: ArrayList<Track>,  private val clickListener:Click
+) : RecyclerView.Adapter<TracksViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.result_of_search, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.result_of_search, parent, false)
         return TracksViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
         holder.bind(tracks[position])
-        holder.itemView.setOnClickListener{
-            searchHistory.editSearchHistory(tracks[position])
+        holder.itemView.setOnClickListener {
+            clickListener.onClick(tracks[position])
         }
     }
 
     override fun getItemCount(): Int = tracks.size
 
+    fun interface Click {
+        fun onClick(track:Track)
+    }
+
+
 }
-class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val trackName: TextView = itemView.findViewById(R.id.track_article)
     private val artistName: TextView = itemView.findViewById(R.id.track_artist)
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
     private val artworkUrl100: ImageView = itemView.findViewById(R.id.track_pic)
     val corner = itemView.resources.getDimensionPixelSize(R.dimen.cover_radius)
-    var numberTrack:Long = 0
+    var numberTrack: Long = 0
 
     fun bind(track: Track) {
         numberTrack = track.trackId
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        trackTime.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
         Glide.with(artworkUrl100.context)
             .load(track.artworkUrl100)
             .centerCrop()
