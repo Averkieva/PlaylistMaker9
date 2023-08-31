@@ -1,8 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -15,7 +14,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.App.Companion.getSharedPreferences
+import com.example.playlistmaker.*
+import com.example.playlistmaker.app.App
+import com.example.playlistmaker.data.dto.TrackResponse
+import com.example.playlistmaker.data.network.ITunesApi
+import com.example.playlistmaker.domain.SearchHistory
+import com.example.playlistmaker.domain.models.Track
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

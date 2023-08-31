@@ -1,10 +1,12 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.example.playlistmaker.app.App
+import com.example.playlistmaker.R
 
 class MainActivity : AppCompatActivity() {
     companion object {
