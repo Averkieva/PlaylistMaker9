@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -10,17 +10,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.StatesOfPlaying
+import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.presentation.ui.AudioPlayerActivityPresentation
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AudioPlayerActivity : AppCompatActivity() {
-
-    enum class StatesOfPlaying {
-        STATE_DEFAULT,
-        STATE_PREPARED,
-        STATE_PLAYING,
-        STATE_PAUSED
-    }
+class AudioPlayerActivity : AppCompatActivity(), AudioPlayerActivityPresentation {
 
     private lateinit var audioPlayerTrackName: TextView
     private lateinit var audioPlayerArtistName: TextView
@@ -34,11 +32,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var audioPlayerPlayButton: ImageButton
     private lateinit var audioPlayerTrackTimer: TextView
 
-    private val mediaPlayer = MediaPlayer()
+    lateinit var playerInteractor: PlayerInteractor
     private var mainThreadHandler: Handler? = null
-    private var statesOfPlaying = StatesOfPlaying.STATE_DEFAULT
-    private val timeRunnable: Runnable = Runnable { duration() }
-    var time = ""
+    lateinit var statesOfPlaying: StatesOfPlaying
 
     companion object {
         const val KEY_TRACK_NAME = "Track Name"
@@ -59,7 +55,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.audio_player)
         initViews()
+        playerInteractor = Creator.providePlayerInteractor()
+        statesOfPlaying = StatesOfPlaying.STATE_PAUSED
+        audioPlayerPlayButton.isEnabled = false
         audioPlayerPlayButton.setOnClickListener { playBackControl() }
+        mainThreadHandler?.post(changeButton())
+        mainThreadHandler?.post(changeTimer())
         audioPlayerBackButton.setOnClickListener {
             finish()
         }
@@ -92,47 +93,23 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         val url = intent.extras?.getString(URL)
-        if (!url.isNullOrEmpty())
-            preparePlayer(url)
+        if (!url.isNullOrEmpty()) playerInteractor.createPlayer(url){
+                audioPlayerPlayButton.isEnabled = true
+            }
     }
 
-    private fun preparePlayer(url: String) {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
+    override fun preparePlayer() {
             audioPlayerPlayButton.isEnabled = true
-            statesOfPlaying = StatesOfPlaying.STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
             audioPlayerPlayButton.setImageResource(R.drawable.play_button)
-            statesOfPlaying = StatesOfPlaying.STATE_PREPARED
-            audioPlayerTrackTimer.text = resources.getString(R.string.track_time)
-            mainThreadHandler?.removeCallbacks(timeRunnable)
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        statesOfPlaying = StatesOfPlaying.STATE_PLAYING
-        audioPlayerPlayButton.setImageResource(R.drawable.audio_player_pause)
-        duration()
-    }
-
-    private fun pausePlayer() {
-        super.onPause()
-        mediaPlayer.pause()
-        statesOfPlaying = StatesOfPlaying.STATE_PAUSED
-        audioPlayerPlayButton.setImageResource(R.drawable.play_button)
-        mainThreadHandler?.removeCallbacks(timeRunnable)
     }
 
     private fun playBackControl() {
         when (statesOfPlaying) {
             StatesOfPlaying.STATE_PLAYING -> {
-                pausePlayer()
+                playerInteractor.pause()
             }
             StatesOfPlaying.STATE_PREPARED, StatesOfPlaying.STATE_PAUSED -> {
-                startPlayer()
+                playerInteractor.play()
             }
             else -> {}
         }
@@ -140,25 +117,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(statesOfPlaying == StatesOfPlaying.STATE_DEFAULT) {
-            mediaPlayer.release()
-            mainThreadHandler?.removeCallbacks(timeRunnable)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (mediaPlayer.isPlaying)
-            mediaPlayer.pause()
-        statesOfPlaying = StatesOfPlaying.STATE_PAUSED
-        audioPlayerPlayButton.setImageResource(R.drawable.play_button)
-        mainThreadHandler?.removeCallbacks(timeRunnable)
-    }
-
-    private fun duration() {
-        time = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-        audioPlayerTrackTimer.text = time
-        mainThreadHandler?.postDelayed(timeRunnable, AUDIO_DELAY_MILLIS)
+        playerInteractor.destroy()
     }
 
     private fun initViews() {
@@ -174,5 +133,32 @@ class AudioPlayerActivity : AppCompatActivity() {
         audioPlayerPlayButton = findViewById(R.id.audioPlayerPlayButton)
         audioPlayerTrackTimer = findViewById(R.id.audioPlayerTrackTimer)
         mainThreadHandler = Handler(Looper.getMainLooper())
+    }
+
+    override fun playerVisibility() {
+        statesOfPlaying = playerInteractor.stateListener()
+
+        when(statesOfPlaying){
+            StatesOfPlaying.STATE_PAUSED -> audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+            StatesOfPlaying.STATE_DEFAULT -> audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+            StatesOfPlaying.STATE_PREPARED -> audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+            StatesOfPlaying.STATE_PLAYING -> audioPlayerPlayButton.setImageResource(R.drawable.audio_player_pause)
+        }
+    }
+
+    private fun changeButton():Runnable{
+        val changing = Runnable {
+            playerVisibility()
+            mainThreadHandler?.postDelayed(changeButton(), AUDIO_DELAY_MILLIS)
+        }
+        return changing
+    }
+
+    private fun changeTimer():Runnable{
+        val changing = Runnable{
+            audioPlayerTrackTimer.text = playerInteractor.time()
+            mainThreadHandler?.postDelayed(changeTimer(), AUDIO_DELAY_MILLIS)
+        }
+        return changing
     }
 }
