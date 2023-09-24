@@ -7,7 +7,7 @@
     android:background="?attr/colorSecondaryVariant"
     android:orientation="vertical"
 
-    tools:context=".presentation.ui.activities.SearchingActivity">
+    tools:context=".ui.search.activity.SearchingActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
