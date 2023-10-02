@@ -40,27 +40,19 @@ class ViewModelSettings(private var shareInteractor:ShareInteractor, private var
     }
 
     fun getTheme():LiveData<Boolean>{
-        val res = if (themeLiveData.value!!)
-            "day"
-        else
-            "night"
         return themeLiveData
     }
 
     fun changeTheme(){
         themeLiveData.value = settingsInteractor.changeTheme()
-        val res = if (themeLiveData.value!!)
-            "day"
-        else
-            "night"
         installTheme(themeLiveData.value!!)
     }
 
     private fun installTheme(flagTheme:Boolean){
         if(flagTheme)
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
 
