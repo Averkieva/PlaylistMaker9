@@ -32,7 +32,7 @@ class SearchingActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-    private val viewModelSearching by viewModels<ViewModelSearching>{ViewModelSearching.getViewModelFactory()}
+    private val viewModelSearching by viewModels<ViewModelSearching> { ViewModelSearching.getViewModelFactory() }
 
 
     companion object {
@@ -44,15 +44,15 @@ class SearchingActivity : AppCompatActivity() {
 
     private val searchRunnable = Runnable { search() }
 
-    var enterIsPressed:Boolean = false
+    var enterIsPressed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModelSearching.getSearchingLiveData().observe(this){searchLiveData ->
-            when(val states = searchLiveData){
+        viewModelSearching.getSearchingLiveData().observe(this) { searchLiveData ->
+            when (val states = searchLiveData) {
                 is StatesOfSearching.Loading -> loading()
                 is StatesOfSearching.Search -> baseSearch()
                 is StatesOfSearching.ErrorConnection -> errorConnection()
@@ -109,7 +109,7 @@ class SearchingActivity : AppCompatActivity() {
         trackHistoryList = try {
             val value = viewModelSearching.provideSearchHistory().value
             value ?: emptyList()
-        } catch (exception: IOException){
+        } catch (exception: IOException) {
             emptyList()
         }
     }
@@ -138,7 +138,7 @@ class SearchingActivity : AppCompatActivity() {
         }
     }
 
-    private fun search(){
+    private fun search() {
         viewModelSearching.requestSearch(binding.inputEditText.text.toString())
     }
 
@@ -163,13 +163,13 @@ class SearchingActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun resultsInvisible(){
+    private fun resultsInvisible() {
         binding.searchedText.visibility = View.GONE
         searchHistoryRecyclerView.visibility = View.GONE
         binding.clearHistoryButton.visibility = View.GONE
     }
 
-    private fun loading(){
+    private fun loading() {
         binding.progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         binding.refreshButton.visibility = View.GONE
@@ -181,7 +181,7 @@ class SearchingActivity : AppCompatActivity() {
         tracksAdapter.notifyDataSetChanged()
     }
 
-    private fun baseSearch(){
+    private fun baseSearch() {
         recyclerView.visibility = View.GONE
         binding.refreshButton.visibility = View.GONE
         binding.nothingFoundPicture.visibility = View.GONE
@@ -191,7 +191,7 @@ class SearchingActivity : AppCompatActivity() {
         resultsInvisible()
     }
 
-    private fun errorConnection(){
+    private fun errorConnection() {
         binding.problemsWithLoadingPicture.visibility = View.VISIBLE
         binding.problemsWithLoadingText.visibility = View.VISIBLE
         binding.refreshButton.visibility = View.VISIBLE
@@ -201,7 +201,7 @@ class SearchingActivity : AppCompatActivity() {
         resultsInvisible()
     }
 
-    private fun errorFound(){
+    private fun errorFound() {
         binding.nothingFoundPicture.visibility = View.VISIBLE
         binding.nothingFoundText.visibility = View.VISIBLE
         binding.searchedText.visibility = View.GONE
@@ -214,7 +214,7 @@ class SearchingActivity : AppCompatActivity() {
         resultsInvisible()
     }
 
-    private fun searchAndHistory(history:List<Track>){
+    private fun searchAndHistory(history: List<Track>) {
         searchHistoryAdapter.setIt(history)
         searchHistoryAdapter.notifyDataSetChanged()
         binding.searchedText.visibility = View.VISIBLE
@@ -230,7 +230,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.hidingHistory.visibility = View.VISIBLE
     }
 
-    private fun searchCompleted(data: List<Track>){
+    private fun searchCompleted(data: List<Track>) {
         binding.progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         binding.nothingFoundPicture.visibility = View.GONE
@@ -243,9 +243,9 @@ class SearchingActivity : AppCompatActivity() {
         resultsInvisible()
     }
 
-    private fun onFocus(){
+    private fun onFocus() {
         binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && viewModelSearching.provideSearchHistory().value?.isNotEmpty()?:false) {
+            if (hasFocus && binding.inputEditText.text.isEmpty() && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
                 viewModelSearching.clearSearchingHistoryList()
             } else {
                 resultsInvisible()
@@ -255,14 +255,14 @@ class SearchingActivity : AppCompatActivity() {
 
     var searchingText = ""
 
-    private fun onTextChange(){
+    private fun onTextChange() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true && trackHistoryList.isNotEmpty()) {
+                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
                     viewModelSearching.clearSearchingHistoryList()
                 } else {
                     resultsInvisible()
@@ -279,7 +279,7 @@ class SearchingActivity : AppCompatActivity() {
 
     }
 
-    private fun changeCrossButton(){
+    private fun changeCrossButton() {
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -295,22 +295,22 @@ class SearchingActivity : AppCompatActivity() {
         binding.inputEditText.addTextChangedListener(simpleTextWatcher)
     }
 
-    private fun enterSearching(){
-            binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (binding.inputEditText.text.isNotEmpty()) {
-                        searchingText = binding.inputEditText.text.toString()
-                        search()
-                        tracksAdapter.notifyDataSetChanged()
-                        enterIsPressed = true
-                        handler.postDelayed(
-                            { enterIsPressed = false }, DEBOUNCE_DELAY_3000L
-                        )
-                    }
-                    true
+    private fun enterSearching() {
+        binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (binding.inputEditText.text.isNotEmpty()) {
+                    searchingText = binding.inputEditText.text.toString()
+                    search()
+                    tracksAdapter.notifyDataSetChanged()
+                    enterIsPressed = true
+                    handler.postDelayed(
+                        { enterIsPressed = false }, DEBOUNCE_DELAY_3000L
+                    )
                 }
-                false
+                true
             }
+            false
+        }
     }
 
 }

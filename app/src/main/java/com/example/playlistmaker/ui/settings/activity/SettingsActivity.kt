@@ -25,7 +25,10 @@ class SettingsActivity : AppCompatActivity() {
         }
         viewModelSettings.getBack().observe(this){backLiveData -> back(backLiveData)}
 
-        binding.themeSwitcher.isChecked = (viewModelSettings.getTheme().value!!)
+        viewModelSettings.getTheme().observe(this){theme ->
+            binding.themeSwitcher.isChecked =! theme
+        }
+
         binding.themeSwitcher.setOnClickListener {
             viewModelSettings.changeTheme()
         }

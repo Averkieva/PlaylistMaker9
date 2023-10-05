@@ -13,7 +13,7 @@ class ThemeImpl(private val application: App): Theme {
     private var flagTheme: Boolean = false
 
     override fun changeTheme(): Boolean {
-        flagTheme != flagTheme
+        flagTheme =! flagTheme
         val changing = sharedPref.edit()
         changing.putBoolean(KEY, flagTheme)
         changing.apply()

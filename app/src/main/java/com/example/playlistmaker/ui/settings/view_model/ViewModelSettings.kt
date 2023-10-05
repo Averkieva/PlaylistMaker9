@@ -23,7 +23,7 @@ class ViewModelSettings(private var shareInteractor:ShareInteractor, private var
                 backLiveData.value = true
             }
 
-    private var themeLiveData = MutableLiveData(settingsInteractor.isDark())
+    var themeLiveData = MutableLiveData(settingsInteractor.isDark())
 
     fun getBack():LiveData<Boolean> = backLiveData
 
@@ -50,9 +50,9 @@ class ViewModelSettings(private var shareInteractor:ShareInteractor, private var
 
     private fun installTheme(flagTheme:Boolean){
         if(flagTheme)
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
 
