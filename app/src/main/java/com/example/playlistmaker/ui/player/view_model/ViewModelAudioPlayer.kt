@@ -1,12 +1,27 @@
 package com.example.playlistmaker.ui.player.view_model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.player.PlayerInteractor
+import com.example.playlistmaker.domain.player.PlayerState
+import com.example.playlistmaker.domain.player.PlayerStateChangeListener
 import com.example.playlistmaker.domain.player.StatesOfPlaying
 
 class ViewModelAudioPlayer(private val playerInteractor: PlayerInteractor):ViewModel() {
+
+    val playerStateLiveData = MutableLiveData<PlayerState>()
+
+    init{
+        val listener = object: PlayerStateChangeListener{
+            override fun onChange(state: PlayerState) {
+                playerStateLiveData.postValue(state)
+            }
+        }
+        playerInteractor.setListener(listener)
+    }
 
     fun createPlayer(url: String, completion: ()->Unit) {
         playerInteractor.createPlayer(url, completion)

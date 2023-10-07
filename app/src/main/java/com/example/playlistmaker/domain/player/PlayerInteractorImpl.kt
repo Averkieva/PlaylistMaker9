@@ -28,4 +28,9 @@ class PlayerInteractorImpl: PlayerInteractor {
     override fun stateListener(): StatesOfPlaying {
         return rep.stateReporter()
     }
+
+    override fun setListener(listener: PlayerStateChangeListener) {
+        rep.setListener(listener)
+    }
+
 }

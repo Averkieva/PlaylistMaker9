@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.domain.player.PlayerRepository
+import com.example.playlistmaker.domain.player.PlayerStateChangeListener
 import com.example.playlistmaker.domain.player.StatesOfPlaying
 import java.text.SimpleDateFormat
 import java.util.*
@@ -15,6 +16,7 @@ class PlayerRepositoryImpl: PlayerRepository {
     }
 
     private val mediaPlayer = MediaPlayer()
+    private lateinit var listener: PlayerStateChangeListener
     private var statesOfPlaying = StatesOfPlaying.STATE_DEFAULT
     private val timeRunnable: Runnable = Runnable { duration() }
     var time = "00:00"
@@ -40,6 +42,10 @@ class PlayerRepositoryImpl: PlayerRepository {
         mediaPlayer.start()
         statesOfPlaying = StatesOfPlaying.STATE_PLAYING
         duration()
+    }
+
+    override fun setListener(listener: PlayerStateChangeListener) {
+        this.listener = listener
     }
 
     override fun pause() {

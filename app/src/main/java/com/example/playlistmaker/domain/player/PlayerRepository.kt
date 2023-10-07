@@ -9,4 +9,5 @@ interface PlayerRepository {
     fun preparePlayer(url:String, completion: ()->Unit)
     fun time():String
     fun stateReporter(): StatesOfPlaying
+    fun setListener(listener: PlayerStateChangeListener)
 }

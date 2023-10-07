@@ -20,14 +20,12 @@ import com.example.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.ViewModelSearching
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
-import java.io.IOException
 
 class SearchingActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var tracksAdapter: TrackAdapter
     private lateinit var searchHistoryAdapter: TrackAdapter
     private lateinit var searchHistoryRecyclerView: RecyclerView
-    private lateinit var trackHistoryList: List<Track>
     private lateinit var binding: ActivitySearchingBinding
 
     private var isClickAllowed = true
@@ -106,11 +104,8 @@ class SearchingActivity : AppCompatActivity() {
             viewModelSearching.clearHistory()
         }
 
-        trackHistoryList = try {
-            val value = viewModelSearching.provideSearchHistory().value
-            value ?: emptyList()
-        } catch (exception: IOException) {
-            emptyList()
+        viewModelSearching.provideSearchHistory().observe(this){value ->
+            value.ifEmpty { emptyList() }
         }
     }
 
@@ -177,6 +172,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.problemsWithLoadingPicture.visibility = View.GONE
         binding.problemsWithLoadingText.visibility = View.GONE
         binding.nothingFoundText.visibility = View.GONE
+        binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
         tracksAdapter.notifyDataSetChanged()
     }
@@ -188,6 +184,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.problemsWithLoadingPicture.visibility = View.GONE
         binding.problemsWithLoadingText.visibility = View.GONE
         binding.nothingFoundText.visibility = View.GONE
+        binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
     }
 
@@ -198,6 +195,7 @@ class SearchingActivity : AppCompatActivity() {
         recyclerView.visibility = View.GONE
         binding.refreshButton.setOnClickListener { search() }
         binding.progressBar.visibility = View.GONE
+        binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
     }
 
@@ -211,6 +209,8 @@ class SearchingActivity : AppCompatActivity() {
         binding.problemsWithLoadingPicture.visibility = View.GONE
         binding.problemsWithLoadingText.visibility = View.GONE
         binding.refreshButton.visibility = View.GONE
+        binding.hidingHistory.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
         resultsInvisible()
     }
 
@@ -240,13 +240,20 @@ class SearchingActivity : AppCompatActivity() {
         binding.refreshButton.visibility = View.GONE
         tracksAdapter.setIt(data)
         binding.clearHistoryButton.visibility = View.GONE
+        binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
     }
 
     private fun onFocus() {
         binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
-                viewModelSearching.clearSearchingHistoryList()
+            if (hasFocus && binding.inputEditText.text.isEmpty()) {
+                viewModelSearching.provideSearchHistory().observe(this) { searchHistoryList ->
+                    if (searchHistoryList.isNotEmpty()) {
+                        viewModelSearching.clearSearchingHistoryList()
+                    } else {
+                        resultsInvisible()
+                    }
+                }
             } else {
                 resultsInvisible()
             }
@@ -257,13 +264,18 @@ class SearchingActivity : AppCompatActivity() {
 
     private fun onTextChange() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
-                    viewModelSearching.clearSearchingHistoryList()
+                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true) {
+                    viewModelSearching.provideSearchHistory().observe(this@SearchingActivity) { searchHistoryList ->
+                        if (searchHistoryList.isNotEmpty()) {
+                            viewModelSearching.clearSearchingHistoryList()
+                        } else {
+                            resultsInvisible()
+                        }
+                    }
                 } else {
                     resultsInvisible()
                 }
@@ -276,7 +288,6 @@ class SearchingActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {
             }
         })
-
     }
 
     private fun changeCrossButton() {
