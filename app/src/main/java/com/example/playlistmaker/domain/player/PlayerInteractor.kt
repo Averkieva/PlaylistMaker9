@@ -6,6 +6,5 @@ interface PlayerInteractor {
     fun destroy()
     fun createPlayer(url: String, completion: ()->Unit)
     fun time():String
-    fun stateListener(): StatesOfPlaying
     fun setListener(listener: PlayerStateChangeListener)
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.app.App
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.settings.interactors.SettingsInteractor
 import com.example.playlistmaker.domain.share.ShareInteractor
@@ -62,7 +61,6 @@ class ViewModelSettings(private var shareInteractor:ShareInteractor, private var
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    val app = App()
                     return ViewModelSettings(
                         Creator.provideShareInteractor(), Creator.provideSettingsInteractor()
                     ) as T

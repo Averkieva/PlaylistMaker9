@@ -1,21 +1,13 @@
 package com.example.playlistmaker.ui.search.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchingBinding
 import com.example.playlistmaker.databinding.ResultOfSearchBinding
 import com.example.playlistmaker.domain.search.model.Track
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-
 
 class TrackAdapter(private val clickListener:Click) : RecyclerView.Adapter<TracksViewHolder>() {
     private var _it: List<Track> = emptyList()

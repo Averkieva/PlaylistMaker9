@@ -10,9 +10,9 @@ import com.example.playlistmaker.domain.player.StatesOfPlaying
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PlayerRepositoryImpl: PlayerRepository {
+class PlayerRepositoryImpl : PlayerRepository {
 
-    companion object{
+    companion object {
         const val AUDIO_DELAY_MILLIS = 100L
     }
 
@@ -23,7 +23,7 @@ class PlayerRepositoryImpl: PlayerRepository {
     var time = "00:00"
     private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
 
-    override fun preparePlayer(url: String, completion: ()->Unit) {
+    override fun preparePlayer(url: String, completion: () -> Unit) {
         if (statesOfPlaying != StatesOfPlaying.STATE_DEFAULT) return
         mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
@@ -64,28 +64,26 @@ class PlayerRepositoryImpl: PlayerRepository {
     }
 
     override fun destroy() {
-        if(statesOfPlaying == StatesOfPlaying.STATE_DEFAULT) {
+        if (statesOfPlaying == StatesOfPlaying.STATE_DEFAULT) {
             mediaPlayer.release()
             mainThreadHandler?.removeCallbacks(timeRunnable)
         }
     }
 
     private fun duration() {
-        if((statesOfPlaying == StatesOfPlaying.STATE_PLAYING)or(statesOfPlaying == StatesOfPlaying.STATE_PAUSED)){
-            time = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+        if ((statesOfPlaying == StatesOfPlaying.STATE_PLAYING) or (statesOfPlaying == StatesOfPlaying.STATE_PAUSED)) {
+            time =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
             mainThreadHandler?.postDelayed(timeRunnable, AUDIO_DELAY_MILLIS)
-        }
-        else{
+            listener.onChange(PlayerState(statesOfPlaying, time))
+        } else {
             time = "00:00"
             mainThreadHandler?.postDelayed(timeRunnable, AUDIO_DELAY_MILLIS)
+            listener.onChange(PlayerState(statesOfPlaying, time))
         }
     }
 
     override fun time(): String {
         return time
-    }
-
-    override fun stateReporter(): StatesOfPlaying {
-        return statesOfPlaying
     }
 }

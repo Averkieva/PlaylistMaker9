@@ -39,6 +39,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         )[ViewModelAudioPlayer::class.java]
 
         viewModelAudioPlayer.playerStateLiveData.observe(this) { playerState ->
+            this.playerState = playerState
             playerVisibility()
         }
         mainThreadHandler = Handler(Looper.getMainLooper())

@@ -25,10 +25,6 @@ class PlayerInteractorImpl: PlayerInteractor {
         return rep.time()
     }
 
-    override fun stateListener(): StatesOfPlaying {
-        return rep.stateReporter()
-    }
-
     override fun setListener(listener: PlayerStateChangeListener) {
         rep.setListener(listener)
     }

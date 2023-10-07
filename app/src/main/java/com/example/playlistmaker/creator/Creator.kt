@@ -7,7 +7,6 @@ import com.example.playlistmaker.data.player.PlayerRepositoryImpl
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.data.search.RepositoryTrackImpl
 import com.example.playlistmaker.data.search.history.SearchingHistoryImpl
-import com.example.playlistmaker.data.search.request_response.NetworkClient
 import com.example.playlistmaker.data.search.request_response.RetrofitNetworkClient
 import com.example.playlistmaker.data.settings.ThemeImpl
 import com.example.playlistmaker.data.share.ExternalNavigatorImpl
@@ -31,11 +30,11 @@ object Creator {
         this.application = application
     }
 
-    fun provideSearchingInteractor(): SearchingInteractor{
+    fun provideSearchingInteractor(): SearchingInteractor {
         return SearchingInteractorImpl(provideRepositoryTrack())
     }
 
-    fun provideRepositoryTrack(): RepositoryTrack{
+    fun provideRepositoryTrack(): RepositoryTrack {
         return RepositoryTrackImpl(RetrofitNetworkClient())
     }
 
@@ -47,7 +46,7 @@ object Creator {
         return PlayerRepositoryImpl()
     }
 
-    fun provideSearchHistory():SearchingHistory{
+    fun provideSearchHistory(): SearchingHistory {
         return SearchingHistoryImpl(application)
     }
 
@@ -55,18 +54,19 @@ object Creator {
         return ThemeImpl(application)
     }
 
-    fun provideSettingsInteractor():SettingsInteractor{
+    fun provideSettingsInteractor(): SettingsInteractor {
         return SettingsInteractorImpl(provideTheme())
     }
 
-    fun provideSearchHistoryInteractor():SearchHistoryInteractor{
+    fun provideSearchHistoryInteractor(): SearchHistoryInteractor {
         return SearchHistoryInteractorImpl(provideSearchHistory())
     }
-    fun provideExternalNavigator():ExternalNavigator{
+
+    fun provideExternalNavigator(): ExternalNavigator {
         return ExternalNavigatorImpl(application)
     }
 
-    fun provideShareInteractor(): ShareInteractor{
+    fun provideShareInteractor(): ShareInteractor {
         return ShareInteractorImpl(provideExternalNavigator())
     }
 }
