@@ -91,7 +91,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun playBackControl() {
-        when (statesOfPlaying) {
+        when (playerState.playingState) {
             StatesOfPlaying.STATE_PLAYING -> {
                 viewModelAudioPlayer.pause()
             }
@@ -108,7 +108,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     fun playerVisibility() {
-        when (statesOfPlaying) {
+        when (playerState.playingState) {
             StatesOfPlaying.STATE_PAUSED, StatesOfPlaying.STATE_DEFAULT, StatesOfPlaying.STATE_PREPARED -> binding.audioPlayerPlayButton.setImageResource(
                 R.drawable.play_button
             )

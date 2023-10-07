@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.domain.player.PlayerRepository
+import com.example.playlistmaker.domain.player.PlayerState
 import com.example.playlistmaker.domain.player.PlayerStateChangeListener
 import com.example.playlistmaker.domain.player.StatesOfPlaying
 import java.text.SimpleDateFormat
@@ -30,11 +31,15 @@ class PlayerRepositoryImpl: PlayerRepository {
         mediaPlayer.setOnPreparedListener {
             statesOfPlaying = StatesOfPlaying.STATE_PREPARED
             completion()
+
+            listener.onChange(PlayerState(statesOfPlaying, time))
         }
         mediaPlayer.setOnCompletionListener {
             statesOfPlaying = StatesOfPlaying.STATE_PREPARED
             mainThreadHandler?.removeCallbacks(timeRunnable)
             time = "00:00"
+
+            listener.onChange(PlayerState(statesOfPlaying, time))
         }
     }
 
@@ -42,6 +47,8 @@ class PlayerRepositoryImpl: PlayerRepository {
         mediaPlayer.start()
         statesOfPlaying = StatesOfPlaying.STATE_PLAYING
         duration()
+
+        listener.onChange(PlayerState(statesOfPlaying, time))
     }
 
     override fun setListener(listener: PlayerStateChangeListener) {
@@ -52,6 +59,8 @@ class PlayerRepositoryImpl: PlayerRepository {
         mediaPlayer.pause()
         statesOfPlaying = StatesOfPlaying.STATE_PAUSED
         mainThreadHandler?.removeCallbacks(timeRunnable)
+
+        listener.onChange(PlayerState(statesOfPlaying, time))
     }
 
     override fun destroy() {
