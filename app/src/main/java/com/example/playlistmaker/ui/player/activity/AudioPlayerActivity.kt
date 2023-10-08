@@ -19,7 +19,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var mainThreadHandler: Handler? = null
     private lateinit var viewModelAudioPlayer: ViewModelAudioPlayer
     private lateinit var binding: AudioPlayerBinding
-    lateinit var playerState: PlayerState
 
     companion object {
         const val year = 4
@@ -37,7 +36,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         )[ViewModelAudioPlayer::class.java]
 
         viewModelAudioPlayer.playerStateLiveData.observe(this) { playerState ->
-            this.playerState = playerState
             playerVisibility()
         }
         mainThreadHandler = Handler(Looper.getMainLooper())
@@ -93,11 +91,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     fun playerVisibility() {
-        when (playerState.playingState) {
-            StatesOfPlaying.STATE_PAUSED, StatesOfPlaying.STATE_DEFAULT, StatesOfPlaying.STATE_PREPARED -> binding.audioPlayerPlayButton.setImageResource(
-                R.drawable.play_button
-            )
-            StatesOfPlaying.STATE_PLAYING -> binding.audioPlayerPlayButton.setImageResource(R.drawable.audio_player_pause)
+        viewModelAudioPlayer.playButtonVisibilityLiveData.observe(this){isVisible ->
+            val resourceId = if(isVisible) R.drawable.play_button else R.drawable.audio_player_pause
+            binding.audioPlayerPlayButton.setImageResource(resourceId)
         }
     }
 

@@ -13,10 +13,14 @@ class ViewModelAudioPlayer(private val playerInteractor: PlayerInteractor):ViewM
 
     val playerStateLiveData = MutableLiveData( PlayerState(StatesOfPlaying.STATE_PAUSED, ""))
 
+    val playButtonVisibilityLiveData = MutableLiveData<Boolean>()
+
     init{
         val listener = object: PlayerStateChangeListener{
             override fun onChange(state: PlayerState) {
                 playerStateLiveData.postValue(state)
+
+                playButtonVisibilityLiveData.postValue(state.playingState == StatesOfPlaying.STATE_PAUSED || state.playingState == StatesOfPlaying.STATE_PREPARED || state.playingState == StatesOfPlaying.STATE_DEFAULT)
             }
         }
         playerInteractor.setListener(listener)
