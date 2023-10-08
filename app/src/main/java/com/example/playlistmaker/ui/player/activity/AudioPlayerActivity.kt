@@ -17,10 +17,8 @@ import com.example.playlistmaker.ui.player.view_model.ViewModelAudioPlayer
 class AudioPlayerActivity : AppCompatActivity() {
 
     private var mainThreadHandler: Handler? = null
-    private var url=""
     private lateinit var viewModelAudioPlayer: ViewModelAudioPlayer
     private lateinit var binding: AudioPlayerBinding
-    private lateinit var statesOfPlaying: StatesOfPlaying
     lateinit var playerState: PlayerState
 
     companion object {
@@ -44,10 +42,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         mainThreadHandler = Handler(Looper.getMainLooper())
 
-        statesOfPlaying = StatesOfPlaying.STATE_PAUSED
-        playerState = PlayerState(StatesOfPlaying.STATE_PAUSED, "")
         binding.audioPlayerPlayButton.isEnabled = false
-        binding.audioPlayerPlayButton.setOnClickListener { playBackControl() }
+        binding.audioPlayerPlayButton.setOnClickListener { viewModelAudioPlayer.playBackControl() }
         mainThreadHandler?.post(changeButton())
         mainThreadHandler?.post(changeTimer())
         binding.audioPlayerBackButton.setOnClickListener {
@@ -80,8 +76,8 @@ class AudioPlayerActivity : AppCompatActivity() {
                 .placeholder(R.drawable.audio_player_cover)
                 .into(binding.audioPlayerCover)
         }
-        url = track?.previewUrl ?: return
-        viewModelAudioPlayer.createPlayer(url) {
+        if (track?.previewUrl == null) return
+        viewModelAudioPlayer.createPlayer(track.previewUrl) {
             preparePlayer()
         }
     }
@@ -89,18 +85,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     fun preparePlayer() {
         binding.audioPlayerPlayButton.isEnabled = true
         binding.audioPlayerPlayButton.setImageResource(R.drawable.play_button)
-    }
-
-    private fun playBackControl() {
-        when (playerState.playingState) {
-            StatesOfPlaying.STATE_PLAYING -> {
-                viewModelAudioPlayer.pause()
-            }
-            StatesOfPlaying.STATE_PREPARED, StatesOfPlaying.STATE_PAUSED -> {
-                viewModelAudioPlayer.play()
-            }
-            else -> {}
-        }
     }
 
     override fun onDestroy() {
