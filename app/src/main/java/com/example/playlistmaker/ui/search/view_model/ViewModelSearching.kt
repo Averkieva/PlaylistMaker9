@@ -27,23 +27,21 @@ class ViewModelSearching(private var searchingInteractor: SearchingInteractor, p
     }
 
     private val searchingTrackConsumer = object : SearchingInteractor.SearchingTrackConsumer {
-        override fun consume(tracks: List<Track>) {
+        override fun consume(tracks: List<Track>?) {
             results.postValue(tracks)
             searchingLiveData.postValue(
-                if (tracks.isNullOrEmpty())
-                    StatesOfSearching.ErrorFound
-                else StatesOfSearching.SearchCompleted(tracks)
+                when{
+                    tracks == null -> StatesOfSearching.ErrorConnection
+                    tracks.isEmpty() -> StatesOfSearching.ErrorFound
+                    else -> StatesOfSearching.SearchCompleted(tracks)
+                }
             )
         }
     }
 
     fun requestSearch(expression: String) {
         searchingLiveData.postValue(StatesOfSearching.Loading)
-        try {
-            searchingInteractor.search(expression, searchingTrackConsumer)
-        } catch (error: Error) {
-            searchingLiveData.postValue(StatesOfSearching.ErrorConnection)
-        }
+        searchingInteractor.search(expression, searchingTrackConsumer)
     }
 
     fun add(it: Track){

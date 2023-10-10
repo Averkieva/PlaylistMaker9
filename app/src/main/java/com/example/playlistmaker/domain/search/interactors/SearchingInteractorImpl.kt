@@ -11,8 +11,12 @@ class SearchingInteractorImpl(private val repository: RepositoryTrack) : Searchi
     ) {
         var data: List<Track>
         val t = Thread {
-            data = repository.searching(expression)
-            consumer.consume(data)
+            try {
+                data = repository.searching(expression)
+                consumer.consume(data)
+            }catch (ex:Exception){
+                consumer.consume(null)
+            }
         }
         t.start()
     }

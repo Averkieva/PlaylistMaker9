@@ -35,15 +35,15 @@ class AudioPlayerActivity : AppCompatActivity() {
             ViewModelAudioPlayer.getViewModelFactory()
         )[ViewModelAudioPlayer::class.java]
 
-        viewModelAudioPlayer.playerStateLiveData.observe(this) { playerState ->
-            playerVisibility()
+        viewModelAudioPlayer.getPlayerStateLiveData().observe(this) { playerState ->
+            playerVisibility(playerState.isPlaying)
+            changeTimer(playerState.timeTrack)
         }
         mainThreadHandler = Handler(Looper.getMainLooper())
 
         binding.audioPlayerPlayButton.isEnabled = false
         binding.audioPlayerPlayButton.setOnClickListener { viewModelAudioPlayer.playBackControl() }
         mainThreadHandler?.post(changeButton())
-        mainThreadHandler?.post(changeTimer())
         binding.audioPlayerBackButton.setOnClickListener {
             finish()
         }
@@ -90,26 +90,20 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModelAudioPlayer.destroy()
     }
 
-    fun playerVisibility() {
-        viewModelAudioPlayer.playButtonVisibilityLiveData.observe(this){isVisible ->
-            val resourceId = if(isVisible) R.drawable.play_button else R.drawable.audio_player_pause
+    fun playerVisibility(isPlaying: Boolean) {
+        val resourceId = if (isPlaying) R.drawable.audio_player_pause else R.drawable.play_button
             binding.audioPlayerPlayButton.setImageResource(resourceId)
-        }
+
     }
 
     private fun changeButton(): Runnable {
         val changing = Runnable {
-            playerVisibility()
             mainThreadHandler?.postDelayed(changeButton(), AUDIO_DELAY_MILLIS)
         }
         return changing
     }
 
-    private fun changeTimer(): Runnable {
-        val changing = Runnable {
-            binding.audioPlayerTrackTimer.text = viewModelAudioPlayer.time()
-            mainThreadHandler?.postDelayed(changeTimer(), AUDIO_DELAY_MILLIS)
-        }
-        return changing
+    private fun changeTimer(time: String) {
+            binding.audioPlayerTrackTimer.text = time
     }
 }

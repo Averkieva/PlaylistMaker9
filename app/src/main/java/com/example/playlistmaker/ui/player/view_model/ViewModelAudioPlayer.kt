@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.player.view_model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,20 +12,20 @@ import com.example.playlistmaker.domain.player.StatesOfPlaying
 
 class ViewModelAudioPlayer(private val playerInteractor: PlayerInteractor):ViewModel() {
 
-    val playerStateLiveData = MutableLiveData( PlayerState(StatesOfPlaying.STATE_PAUSED, ""))
-
-    val playButtonVisibilityLiveData = MutableLiveData<Boolean>()
+   private val playerStateLiveData = MutableLiveData<PlayerScreenState>()
 
     init{
         val listener = object: PlayerStateChangeListener{
             override fun onChange(state: PlayerState) {
-                playerStateLiveData.postValue(state)
+                val isPlaying = state.playingState == StatesOfPlaying.STATE_PLAYING
 
-                playButtonVisibilityLiveData.postValue(state.playingState == StatesOfPlaying.STATE_PAUSED || state.playingState == StatesOfPlaying.STATE_PREPARED || state.playingState == StatesOfPlaying.STATE_DEFAULT)
+                playerStateLiveData.postValue(PlayerScreenState(isPlaying, state.timeTrack))
             }
         }
         playerInteractor.setListener(listener)
     }
+
+    fun getPlayerStateLiveData(): LiveData<PlayerScreenState> = playerStateLiveData
 
     fun createPlayer(url: String, completion: ()->Unit) {
         playerInteractor.createPlayer(url, completion)
@@ -42,21 +43,9 @@ class ViewModelAudioPlayer(private val playerInteractor: PlayerInteractor):ViewM
         playerInteractor.destroy()
     }
 
-    fun time():String{
-        return playerInteractor.time()
-    }
-
      fun playBackControl() {
          val currentState = playerStateLiveData.value
-        when (currentState?.playingState) {
-            StatesOfPlaying.STATE_PLAYING -> {
-                pause()
-            }
-            StatesOfPlaying.STATE_PREPARED, StatesOfPlaying.STATE_PAUSED -> {
-                play()
-            }
-            else -> {}
-        }
+         if (currentState?.isPlaying == true) { pause() } else { play() }
     }
 
     companion object{
