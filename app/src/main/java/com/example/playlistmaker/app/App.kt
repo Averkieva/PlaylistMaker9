@@ -1,35 +1,31 @@
 package com.example.playlistmaker.app
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.SearchHistory
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.creator.Creator
 
 class App : Application() {
+
+    private var flagTheme: Boolean = false
+
     companion object {
-        lateinit var savedSearchHistory: SharedPreferences
-        fun getSharedPreferences(): SharedPreferences {
-            return savedSearchHistory
-        }
-        var searchHistoryList = ArrayList<Track>()
+        lateinit var instance: App
     }
-    var darkTheme = false
 
     override fun onCreate() {
         super.onCreate()
-        savedSearchHistory = applicationContext.getSharedPreferences(SearchHistory.SEARCH_SHARED_PREFERENCE, Context.MODE_PRIVATE)
+        instance = this
+        Creator.init(this)
+
+        val settingsInteractor = Creator.provideSettingsInteractor()
+        flagTheme = settingsInteractor.isDark()
+        installTheme(flagTheme)
     }
 
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        darkTheme = darkThemeEnabled
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
+    private fun installTheme(flagTheme: Boolean) {
+        if (flagTheme)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 }
