@@ -1,12 +1,15 @@
 package com.example.playlistmaker.data.search.history
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.domain.search.history.SearchingHistory
 import com.example.playlistmaker.domain.search.model.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchingHistoryImpl(private val context: Context) : SearchingHistory {
+class SearchingHistoryImpl(
+    private val savedSearchHistory: SharedPreferences,
+    private val gson: Gson
+) : SearchingHistory {
 
     companion object {
         const val SEARCH_SHARED_PREFERENCE = "search"
@@ -15,9 +18,6 @@ class SearchingHistoryImpl(private val context: Context) : SearchingHistory {
         const val number_0 = 0
     }
 
-    private val savedSearchHistory =
-        context.getSharedPreferences(SEARCH_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-    private val gson = Gson()
     private var trackHistoryList = ArrayList<Track>()
 
     override fun clearHistory() {
@@ -26,14 +26,13 @@ class SearchingHistoryImpl(private val context: Context) : SearchingHistory {
     }
 
     override fun add(newIt: Track) {
-        val json = ""
-        if (json.isNotEmpty()) {
-            if (trackHistoryList.isEmpty()) {
-                if (savedSearchHistory.contains(SEARCH_SHARED_PREFERENCE)) {
-                    val type = object : TypeToken<ArrayList<Track>>() {}.type
-                    trackHistoryList = gson.fromJson(json, type)
-                }
-            }
+        val json = savedSearchHistory.getString(SEARCH_SHARED_PREFERENCE, "")
+        if (json != null && json.isNotEmpty() && trackHistoryList.isEmpty() && savedSearchHistory.contains(
+                SEARCH_SHARED_PREFERENCE
+            )
+        ) {
+            val type = object : TypeToken<ArrayList<Track>>() {}.type
+            trackHistoryList = gson.fromJson(json, type)
         }
         if (trackHistoryList.contains(newIt)) {
             trackHistoryList.remove(newIt)

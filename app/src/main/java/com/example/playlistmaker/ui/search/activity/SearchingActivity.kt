@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchingBinding
@@ -20,6 +19,7 @@ import com.example.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.ViewModelSearching
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchingActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -30,7 +30,7 @@ class SearchingActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-    private val viewModelSearching by viewModels<ViewModelSearching> { ViewModelSearching.getViewModelFactory() }
+    private val viewModelSearching by viewModel<ViewModelSearching>()
 
 
     companion object {
@@ -104,7 +104,7 @@ class SearchingActivity : AppCompatActivity() {
             viewModelSearching.clearHistory()
         }
 
-        viewModelSearching.provideSearchHistory().observe(this){value ->
+        viewModelSearching.provideSearchHistory().observe(this) { value ->
             value.ifEmpty { emptyList() }
         }
     }
@@ -175,6 +175,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
         tracksAdapter.notifyDataSetChanged()
+        binding.searchField.visibility = View.GONE
     }
 
     private fun baseSearch() {
@@ -186,6 +187,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.nothingFoundText.visibility = View.GONE
         binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
+        binding.searchField.visibility = View.VISIBLE
     }
 
     private fun errorConnection() {
@@ -197,6 +199,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.GONE
         binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
+        binding.searchField.visibility = View.VISIBLE
     }
 
     private fun errorFound() {
@@ -212,6 +215,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.hidingHistory.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         resultsInvisible()
+        binding.searchField.visibility = View.VISIBLE
     }
 
     private fun searchAndHistory(history: List<Track>) {
@@ -228,6 +232,7 @@ class SearchingActivity : AppCompatActivity() {
         binding.refreshButton.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.hidingHistory.visibility = View.VISIBLE
+        binding.searchField.visibility = View.GONE
     }
 
     private fun searchCompleted(data: List<Track>) {
@@ -269,13 +274,14 @@ class SearchingActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true) {
-                    viewModelSearching.provideSearchHistory().observe(this@SearchingActivity) { searchHistoryList ->
-                        if (searchHistoryList.isNotEmpty()) {
-                            viewModelSearching.clearSearchingHistoryList()
-                        } else {
-                            resultsInvisible()
+                    viewModelSearching.provideSearchHistory()
+                        .observe(this@SearchingActivity) { searchHistoryList ->
+                            if (searchHistoryList.isNotEmpty()) {
+                                viewModelSearching.clearSearchingHistoryList()
+                            } else {
+                                resultsInvisible()
+                            }
                         }
-                    }
                 } else {
                     resultsInvisible()
                 }

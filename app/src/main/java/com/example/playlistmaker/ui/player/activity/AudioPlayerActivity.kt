@@ -4,20 +4,18 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.AudioPlayerBinding
-import com.example.playlistmaker.domain.player.PlayerState
-import com.example.playlistmaker.domain.player.StatesOfPlaying
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.player.view_model.ViewModelAudioPlayer
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
 
     private var mainThreadHandler: Handler? = null
-    private lateinit var viewModelAudioPlayer: ViewModelAudioPlayer
+    val viewModelAudioPlayer by viewModel<ViewModelAudioPlayer>()
     private lateinit var binding: AudioPlayerBinding
 
     companion object {
@@ -29,11 +27,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = AudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModelAudioPlayer = ViewModelProvider(
-            this,
-            ViewModelAudioPlayer.getViewModelFactory()
-        )[ViewModelAudioPlayer::class.java]
 
         viewModelAudioPlayer.getPlayerStateLiveData().observe(this) { playerState ->
             playerVisibility(playerState.isPlaying)
@@ -92,7 +85,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     fun playerVisibility(isPlaying: Boolean) {
         val resourceId = if (isPlaying) R.drawable.audio_player_pause else R.drawable.play_button
-            binding.audioPlayerPlayButton.setImageResource(resourceId)
+        binding.audioPlayerPlayButton.setImageResource(resourceId)
 
     }
 
@@ -104,6 +97,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun changeTimer(time: String) {
-            binding.audioPlayerTrackTimer.text = time
+        binding.audioPlayerTrackTimer.text = time
     }
 }

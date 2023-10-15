@@ -1,9 +1,6 @@
 package com.example.playlistmaker.domain.player
 
-import com.example.playlistmaker.creator.Creator
-
-class PlayerInteractorImpl: PlayerInteractor {
-    var rep = Creator.providePlayerRepository()
+class PlayerInteractorImpl(private val rep: PlayerRepository) : PlayerInteractor {
 
     override fun pause() {
         rep.pause()
@@ -17,7 +14,7 @@ class PlayerInteractorImpl: PlayerInteractor {
         rep.destroy()
     }
 
-    override fun createPlayer(url: String, completion: ()->Unit) {
+    override fun createPlayer(url: String, completion: () -> Unit) {
         rep.preparePlayer(url, completion)
     }
 

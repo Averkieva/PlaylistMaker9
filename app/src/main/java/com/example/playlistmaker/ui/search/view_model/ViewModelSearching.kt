@@ -3,16 +3,18 @@ package com.example.playlistmaker.ui.search.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.search.ErrorType
 import com.example.playlistmaker.domain.search.history.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.interactors.SearchingInteractor
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
 
-class ViewModelSearching(private var searchingInteractor: SearchingInteractor, private var searchingHistoryInteractor: SearchHistoryInteractor):ViewModel() {
+class ViewModelSearching(
+    private var searchingInteractor: SearchingInteractor,
+    private var searchingHistoryInteractor: SearchHistoryInteractor
+) : ViewModel() {
 
-    private var results: MutableLiveData<List<Track>> = MutableLiveData<List<Track>>()
+    private var results: MutableLiveData<List<Track>?> = MutableLiveData<List<Track>?>()
 
     private var searchingLiveData =
         MutableLiveData<StatesOfSearching>(StatesOfSearching.Search)
@@ -27,15 +29,20 @@ class ViewModelSearching(private var searchingInteractor: SearchingInteractor, p
     }
 
     private val searchingTrackConsumer = object : SearchingInteractor.SearchingTrackConsumer {
-        override fun consume(tracks: List<Track>?) {
-            results.postValue(tracks)
-            searchingLiveData.postValue(
-                when{
-                    tracks == null -> StatesOfSearching.ErrorConnection
-                    tracks.isEmpty() -> StatesOfSearching.ErrorFound
-                    else -> StatesOfSearching.SearchCompleted(tracks)
+        override fun consume(tracks: List<Track>?, errorMessage: ErrorType?) {
+            when (errorMessage) {
+                ErrorType.CONNECTION_ERROR -> searchingLiveData.postValue(StatesOfSearching.ErrorConnection)
+                ErrorType.SERVER_ERROR -> searchingLiveData.postValue(StatesOfSearching.ErrorFound)
+
+                else -> {
+                    results.postValue(tracks)
+                    searchingLiveData.postValue(
+                        if (tracks.isNullOrEmpty())
+                            StatesOfSearching.ErrorFound
+                        else StatesOfSearching.SearchCompleted(tracks)
+                    )
                 }
-            )
+            }
         }
     }
 
@@ -44,17 +51,18 @@ class ViewModelSearching(private var searchingInteractor: SearchingInteractor, p
         searchingInteractor.search(expression, searchingTrackConsumer)
     }
 
-    fun add(it: Track){
+    fun add(it: Track) {
         searchingHistoryInteractor.add(it)
     }
 
-    fun clearHistory(){
+    fun clearHistory() {
         searchingHistoryInteractor.clearHistory()
     }
 
-    fun provideSearchHistory(): LiveData<List<Track>>{
+    fun provideSearchHistory(): LiveData<List<Track>> {
+        val history = searchingHistoryInteractor.provideSearchHistory()
         searchingHistoryList.value = searchingHistoryInteractor.provideSearchHistory()
-        if (searchingHistoryInteractor.provideSearchHistory().isNullOrEmpty()) {
+        if (history.isNullOrEmpty()) {
             searchingHistoryList.postValue(emptyList())
         }
         return searchingHistoryList
@@ -62,20 +70,8 @@ class ViewModelSearching(private var searchingInteractor: SearchingInteractor, p
 
     fun clearSearchingHistoryList() {
         results.value = emptyList()
-        searchingLiveData.value= searchingHistoryList.value?.let { StatesOfSearching.SearchAndHistory(it) }
-    }
-
-
-
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ViewModelSearching(
-                        Creator.provideSearchingInteractor(),Creator.provideSearchHistoryInteractor()
-                    ) as T
-                }
-            }
+        searchingHistoryList.value = searchingHistoryInteractor.provideSearchHistory()
+        searchingLiveData.value =
+            searchingHistoryList.value?.let { StatesOfSearching.SearchAndHistory(it) }
     }
 }
