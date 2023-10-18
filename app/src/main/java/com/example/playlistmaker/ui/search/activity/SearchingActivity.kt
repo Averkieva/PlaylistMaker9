@@ -175,7 +175,6 @@ class SearchingActivity : AppCompatActivity() {
         binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
         tracksAdapter.notifyDataSetChanged()
-        binding.searchField.visibility = View.GONE
     }
 
     private fun baseSearch() {
@@ -187,7 +186,6 @@ class SearchingActivity : AppCompatActivity() {
         binding.nothingFoundText.visibility = View.GONE
         binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
-        binding.searchField.visibility = View.VISIBLE
     }
 
     private fun errorConnection() {
@@ -199,7 +197,6 @@ class SearchingActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.GONE
         binding.hidingHistory.visibility = View.GONE
         resultsInvisible()
-        binding.searchField.visibility = View.VISIBLE
     }
 
     private fun errorFound() {
@@ -215,7 +212,6 @@ class SearchingActivity : AppCompatActivity() {
         binding.hidingHistory.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         resultsInvisible()
-        binding.searchField.visibility = View.VISIBLE
     }
 
     private fun searchAndHistory(history: List<Track>) {
@@ -232,7 +228,6 @@ class SearchingActivity : AppCompatActivity() {
         binding.refreshButton.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.hidingHistory.visibility = View.VISIBLE
-        binding.searchField.visibility = View.GONE
     }
 
     private fun searchCompleted(data: List<Track>) {
@@ -254,9 +249,10 @@ class SearchingActivity : AppCompatActivity() {
             if (hasFocus && binding.inputEditText.text.isEmpty()) {
                 viewModelSearching.provideSearchHistory().observe(this) { searchHistoryList ->
                     if (searchHistoryList.isNotEmpty()) {
-                        viewModelSearching.clearSearchingHistoryList()
+                        searchHistoryRecyclerView.visibility = View.VISIBLE
                     } else {
                         resultsInvisible()
+                        searchHistoryRecyclerView.visibility = View.GONE
                     }
                 }
             } else {
@@ -277,7 +273,7 @@ class SearchingActivity : AppCompatActivity() {
                     viewModelSearching.provideSearchHistory()
                         .observe(this@SearchingActivity) { searchHistoryList ->
                             if (searchHistoryList.isNotEmpty()) {
-                                viewModelSearching.clearSearchingHistoryList()
+                                searchHistoryRecyclerView.visibility = View.VISIBLE
                             } else {
                                 resultsInvisible()
                             }
