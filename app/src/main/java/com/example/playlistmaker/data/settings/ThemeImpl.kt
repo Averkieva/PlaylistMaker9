@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data.settings
 
+import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -8,8 +9,7 @@ import com.example.playlistmaker.domain.settings.interactors.Theme
 
 const val KEY = "key"
 
-class ThemeImpl(private val application: App): Theme {
-    private lateinit var sharedPref: SharedPreferences
+class ThemeImpl(private val application: Application, private var sharedPref: SharedPreferences): Theme {
     private var flagTheme: Boolean = false
 
     override fun changeTheme(): Boolean {

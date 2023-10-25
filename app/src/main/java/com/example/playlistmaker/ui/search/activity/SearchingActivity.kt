@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchingBinding
@@ -20,6 +19,7 @@ import com.example.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.ViewModelSearching
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchingActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -30,7 +30,7 @@ class SearchingActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-    private val viewModelSearching by viewModels<ViewModelSearching> { ViewModelSearching.getViewModelFactory() }
+    private val viewModelSearching by viewModel<ViewModelSearching>()
 
 
     companion object {
@@ -104,7 +104,7 @@ class SearchingActivity : AppCompatActivity() {
             viewModelSearching.clearHistory()
         }
 
-        viewModelSearching.provideSearchHistory().observe(this){value ->
+        viewModelSearching.provideSearchHistory().observe(this) { value ->
             value.ifEmpty { emptyList() }
         }
     }
@@ -249,9 +249,10 @@ class SearchingActivity : AppCompatActivity() {
             if (hasFocus && binding.inputEditText.text.isEmpty()) {
                 viewModelSearching.provideSearchHistory().observe(this) { searchHistoryList ->
                     if (searchHistoryList.isNotEmpty()) {
-                        viewModelSearching.clearSearchingHistoryList()
+                        searchHistoryRecyclerView.visibility = View.VISIBLE
                     } else {
                         resultsInvisible()
+                        searchHistoryRecyclerView.visibility = View.GONE
                     }
                 }
             } else {
@@ -269,13 +270,14 @@ class SearchingActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true) {
-                    viewModelSearching.provideSearchHistory().observe(this@SearchingActivity) { searchHistoryList ->
-                        if (searchHistoryList.isNotEmpty()) {
-                            viewModelSearching.clearSearchingHistoryList()
-                        } else {
-                            resultsInvisible()
+                    viewModelSearching.provideSearchHistory()
+                        .observe(this@SearchingActivity) { searchHistoryList ->
+                            if (searchHistoryList.isNotEmpty()) {
+                                searchHistoryRecyclerView.visibility = View.VISIBLE
+                            } else {
+                                resultsInvisible()
+                            }
                         }
-                    }
                 } else {
                     resultsInvisible()
                 }

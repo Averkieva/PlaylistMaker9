@@ -1,12 +1,12 @@
 package com.example.playlistmaker.data.share
 
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.R
-import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.share.ExternalNavigator
 
-class ExternalNavigatorImpl(private val application: App):ExternalNavigator {
+class ExternalNavigatorImpl(private val application: Application) : ExternalNavigator {
     override fun getShareLink(): String {
         return application.getString(R.string.android_developer_url)
     }
@@ -20,7 +20,7 @@ class ExternalNavigatorImpl(private val application: App):ExternalNavigator {
     }
 
     override fun openMail() {
-        val intent = Intent.createChooser(Intent(Intent.ACTION_SENDTO).apply{
+        val intent = Intent.createChooser(Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:")
             putExtra(Intent.EXTRA_EMAIL, application.getString(R.string.email))
             putExtra(Intent.EXTRA_SUBJECT, application.getString(R.string.sub))
