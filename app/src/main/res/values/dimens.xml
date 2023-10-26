@@ -25,4 +25,8 @@
     <dimen name = "margin_top_play_button">36dp</dimen>
     <dimen name = "margin_top_timer">4dp</dimen>
     <dimen name = "height_view">20dp</dimen>
+    <dimen name = "margin_top_mediateka">14dp</dimen>
+    <dimen name = "margin_top_back_button">2dp</dimen>
+    <dimen name = "primary_text_size_19sp">19sp</dimen>
+    <dimen name = "margin_top_empty_picture">106dp</dimen>
 </resources>
