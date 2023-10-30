@@ -37,4 +37,10 @@
     <string name="unknownYear">Year</string>
     <string name="unknownGenre">Unknown Genre</string>
     <string name="unknownCountry">Unknown Country</string>
+    <string name="mediateka">Медиатека</string>
+    <string name="mediateka_empty">Ваша медиатека пуста</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="playlist_empty">Вы не создали \n ни одного плейлиста</string>
+    <string name="favourite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
 </resources>
