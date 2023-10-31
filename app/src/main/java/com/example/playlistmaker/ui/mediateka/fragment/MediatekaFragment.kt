@@ -13,7 +13,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class MediatekaFragment : Fragment(), SelectPage {
 
-    private lateinit var binding: FragmentMediatekaBinding
+    private var _binding: FragmentMediatekaBinding? = null
+    private val binding get() = _binding!!
     private lateinit var tabMediator: TabLayoutMediator
 
     override fun onCreateView(
@@ -22,7 +23,7 @@ class MediatekaFragment : Fragment(), SelectPage {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentMediatekaBinding.inflate(layoutInflater)
+        _binding = FragmentMediatekaBinding.inflate(layoutInflater)
 
         binding.viewPager.adapter = MediatekaFragmentAdapter(this)
 
@@ -43,6 +44,7 @@ class MediatekaFragment : Fragment(), SelectPage {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         tabMediator.detach()
     }
 }

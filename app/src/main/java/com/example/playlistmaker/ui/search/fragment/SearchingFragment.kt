@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search.fragment
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,7 +30,8 @@ class SearchingFragment : Fragment() {
     private lateinit var tracksAdapter: TrackAdapter
     private lateinit var searchHistoryAdapter: TrackAdapter
     private lateinit var searchHistoryRecyclerView: RecyclerView
-    private lateinit var binding: FragmentSearchingBinding
+    private var _binding: FragmentSearchingBinding? = null
+    private val binding get() = _binding!!
     private lateinit var bottomNavigator: BottomNavigationView
 
     private var isClickAllowed = true
@@ -55,7 +55,7 @@ class SearchingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchingBinding.inflate(layoutInflater)
+        _binding = FragmentSearchingBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -137,6 +137,11 @@ class SearchingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         isClickAllowed = true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -280,11 +285,11 @@ class SearchingFragment : Fragment() {
 
     private fun onTextChange() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (binding.inputEditText.hasFocus() && s?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
                     viewModelSearching.clearSearchingHistoryList()
                 } else {
                     resultsInvisible()
@@ -296,7 +301,7 @@ class SearchingFragment : Fragment() {
             }
 
 
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(s: Editable?) {
             }
         })
     }
