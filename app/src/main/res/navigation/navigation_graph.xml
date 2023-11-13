@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/mediatekaFragment">
+
+    <fragment
+        android:id="@+id/searchingFragment"
+        android:name="com.example.playlistmaker.ui.search.fragment.SearchingFragment"
+        android:label="fragment_searching"
+        tools:layout="@layout/fragment_searching" />
+
+    <fragment
+        android:id="@+id/mediatekaFragment"
+        android:name="com.example.playlistmaker.ui.mediateka.fragment.MediatekaFragment"
+        android:label="fragment_mediateka"
+        tools:layout="@layout/fragment_mediateka" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.playlistmaker.ui.settings.fragment.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/bottomNavigation"
+        android:label="fragment_bottom_navigation"
+        tools:layout="@layout/fragment_bottom_navigation" />
+</navigation>
