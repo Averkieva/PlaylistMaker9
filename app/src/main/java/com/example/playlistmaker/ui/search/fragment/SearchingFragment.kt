@@ -3,8 +3,6 @@ package com.example.playlistmaker.ui.search.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
@@ -23,9 +22,14 @@ import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.ViewModelSearching
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchingFragment : Fragment() {
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var tracksAdapter: TrackAdapter
     private lateinit var searchHistoryAdapter: TrackAdapter
@@ -33,22 +37,17 @@ class SearchingFragment : Fragment() {
     private var _binding: FragmentSearchingBinding? = null
     private val binding get() = _binding!!
     private lateinit var bottomNavigator: BottomNavigationView
-
     private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
     private val viewModelSearching by viewModel<ViewModelSearching>()
+    private var latestSearchingText: String? = null
+    private var searchingJob: Job? = null
 
 
     companion object {
         const val QUERY = "QUERY"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val DEBOUNCE_DELAY_3000L = 3000L
     }
-
-    private val searchRunnable = Runnable { search() }
-
-    var enterIsPressed: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,12 +87,14 @@ class SearchingFragment : Fragment() {
             viewModelSearching.clearSearchingHistoryList()
         }
 
+        clickDebounce()
+
         changeCrossButton()
 
         enterSearching()
 
         tracksAdapter = TrackAdapter {
-            if (clickDebounce())
+            if (isClickAllowed)
                 clicker(it)
         }
 
@@ -102,7 +103,7 @@ class SearchingFragment : Fragment() {
         recyclerView.adapter = tracksAdapter
 
         searchHistoryAdapter = TrackAdapter {
-            if (clickDebounce()) {
+            if (isClickAllowed) {
                 clicker(it)
             }
         }
@@ -163,18 +164,28 @@ class SearchingFragment : Fragment() {
         this.startActivity(intent)
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
+    private fun clickDebounce() {
+        GlobalScope.launch { clickDebouncer() }
+    }
+
+    private suspend fun clickDebouncer() {
+        isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            delay(CLICK_DEBOUNCE_DELAY)
+            isClickAllowed = true
         }
-        return current
     }
 
     private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        val changingText = binding.inputEditText.text.toString()
+        if (latestSearchingText == changingText) return
+        latestSearchingText = changingText
+        searchingJob?.cancel()
+        searchingJob = lifecycleScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            search()
+        }
     }
 
     private fun resultsInvisible() {
@@ -281,8 +292,6 @@ class SearchingFragment : Fragment() {
         }
     }
 
-    var searchingText = ""
-
     private fun onTextChange() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -295,7 +304,6 @@ class SearchingFragment : Fragment() {
                     resultsInvisible()
                 }
                 if (!binding.inputEditText.text.isNullOrEmpty()) {
-                    searchingText = binding.inputEditText.text.toString()
                     searchDebounce()
                 }
             }
@@ -326,14 +334,9 @@ class SearchingFragment : Fragment() {
         binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (binding.inputEditText.text.isNotEmpty()) {
-                    searchingText = binding.inputEditText.text.toString()
                     bottomNavigator.visibility = View.VISIBLE
-                    search()
+                    searchDebounce()
                     tracksAdapter.notifyDataSetChanged()
-                    enterIsPressed = true
-                    handler.postDelayed(
-                        { enterIsPressed = false }, DEBOUNCE_DELAY_3000L
-                    )
                 }
                 true
             }
