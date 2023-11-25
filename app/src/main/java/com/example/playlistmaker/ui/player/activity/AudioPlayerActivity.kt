@@ -86,6 +86,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModelAudioPlayer.destroy()
     }
 
+    override fun onPause(){
+        super.onPause()
+        viewModelAudioPlayer.pause()
+    }
+
     fun playerVisibility(isPlaying: Boolean) {
         val resourceId = if (isPlaying) R.drawable.audio_player_pause else R.drawable.play_button
         binding.audioPlayerPlayButton.setImageResource(resourceId)
