@@ -21,6 +21,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     companion object {
         const val year = 4
         const val AUDIO_DELAY_MILLIS = 300L
+        const val KEY_PLAYER_CREATED = "key_player_created"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,11 +75,25 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModelAudioPlayer.createPlayer(track.previewUrl) {
             preparePlayer()
         }
+
+        if (savedInstanceState != null) {
+            val playerCreated = savedInstanceState.getBoolean(KEY_PLAYER_CREATED, false)
+            if (playerCreated) {
+                preparePlayer()
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_PLAYER_CREATED, viewModelAudioPlayer.audioPlayerJob != null)
     }
 
     fun preparePlayer() {
-        binding.audioPlayerPlayButton.isEnabled = true
-        binding.audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+        if (viewModelAudioPlayer.audioPlayerJob != null) {
+            binding.audioPlayerPlayButton.isEnabled = true
+            binding.audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+        }
     }
 
     override fun onDestroy() {
