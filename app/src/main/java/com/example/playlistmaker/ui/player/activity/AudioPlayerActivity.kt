@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.search.request_response.TrackDto
 import com.example.playlistmaker.databinding.AudioPlayerBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.player.view_model.ViewModelAudioPlayer
@@ -82,6 +83,15 @@ class AudioPlayerActivity : AppCompatActivity() {
                 preparePlayer()
             }
         }
+        binding.audioPlayerFavouriteButton.setOnClickListener {
+            viewModelAudioPlayer.onFavoriteClicked(track)
+        }
+
+        viewModelAudioPlayer.observeFavourite(track).observe(this) { isLiked ->
+            if (isLiked)
+                binding.audioPlayerFavouriteButton.setImageResource(R.drawable.audio_player_fav_button)
+            else binding.audioPlayerFavouriteButton.setImageResource(R.drawable.audio_player_no_active_fav)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -101,7 +111,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModelAudioPlayer.destroy()
     }
 
-    override fun onPause(){
+    override fun onPause() {
         super.onPause()
         viewModelAudioPlayer.pause()
     }
