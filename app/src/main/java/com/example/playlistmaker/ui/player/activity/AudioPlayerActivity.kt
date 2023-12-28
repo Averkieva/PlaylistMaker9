@@ -1,26 +1,27 @@
 package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.AudioPlayerBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.player.view_model.ViewModelAudioPlayer
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private var mainThreadHandler: Handler? = null
     val viewModelAudioPlayer by viewModel<ViewModelAudioPlayer>()
     private lateinit var binding: AudioPlayerBinding
 
     companion object {
         const val year = 4
-        const val AUDIO_DELAY_MILLIS = 100L
+        const val AUDIO_DELAY_MILLIS = 300L
+        const val KEY_PLAYER_CREATED = "key_player_created"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,15 +29,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = AudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        changeButton()
+
         viewModelAudioPlayer.getPlayerStateLiveData().observe(this) { playerState ->
             playerVisibility(playerState.isPlaying)
-            changeTimer(playerState.timeTrack)
         }
-        mainThreadHandler = Handler(Looper.getMainLooper())
+
+        viewModelAudioPlayer.standTime().observe(this) { time ->
+            binding.audioPlayerTrackTimer.text = time
+        }
 
         binding.audioPlayerPlayButton.isEnabled = false
         binding.audioPlayerPlayButton.setOnClickListener { viewModelAudioPlayer.playBackControl() }
-        mainThreadHandler?.post(changeButton())
         binding.audioPlayerBackButton.setOnClickListener {
             finish()
         }
@@ -71,16 +75,35 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModelAudioPlayer.createPlayer(track.previewUrl) {
             preparePlayer()
         }
+
+        if (savedInstanceState != null) {
+            val playerCreated = savedInstanceState.getBoolean(KEY_PLAYER_CREATED, false)
+            if (playerCreated) {
+                preparePlayer()
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_PLAYER_CREATED, viewModelAudioPlayer.audioPlayerJob != null)
     }
 
     fun preparePlayer() {
-        binding.audioPlayerPlayButton.isEnabled = true
-        binding.audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+        if (viewModelAudioPlayer.audioPlayerJob != null) {
+            binding.audioPlayerPlayButton.isEnabled = true
+            binding.audioPlayerPlayButton.setImageResource(R.drawable.play_button)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModelAudioPlayer.destroy()
+    }
+
+    override fun onPause(){
+        super.onPause()
+        viewModelAudioPlayer.pause()
     }
 
     fun playerVisibility(isPlaying: Boolean) {
@@ -89,14 +112,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     }
 
-    private fun changeButton(): Runnable {
-        val changing = Runnable {
-            mainThreadHandler?.postDelayed(changeButton(), AUDIO_DELAY_MILLIS)
+    private fun changeButton() {
+        lifecycleScope.launch {
+            delay(AUDIO_DELAY_MILLIS)
         }
-        return changing
-    }
-
-    private fun changeTimer(time: String) {
-        binding.audioPlayerTrackTimer.text = time
     }
 }

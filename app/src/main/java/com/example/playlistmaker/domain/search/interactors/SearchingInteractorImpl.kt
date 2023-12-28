@@ -2,21 +2,23 @@ package com.example.playlistmaker.domain.search.interactors
 
 import com.example.playlistmaker.data.search.request_response.Resource
 import com.example.playlistmaker.domain.search.RepositoryTrack
-import java.util.concurrent.Executors
+import com.example.playlistmaker.domain.search.model.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SearchingInteractorImpl(private val repository: RepositoryTrack) : SearchingInteractor {
 
-    private val executor = Executors.newCachedThreadPool()
+    override fun search(expression: String): Flow<Resource<List<Track>>> {
+        return repository.searching(expression).map { result ->
+            when (result) {
+                is Resource.Success -> {
+                    (Resource.Success(result.data))
+                }
 
-    override fun search(
-        expression: String,
-        consumer: SearchingInteractor.SearchingTrackConsumer
-    ) {
-        executor.execute {
-            when (val tracksData=repository.searching(expression))  {
-                is Resource.Success -> { consumer.consume(tracksData.data, null) }
-                is Resource.Error -> { consumer.consume(null, tracksData.message) }
-            }
+                is Resource.Error<*> -> {
+                    Resource.Error(null, result.message)
+                }
+            } as Resource<List<Track>>
         }
     }
 }

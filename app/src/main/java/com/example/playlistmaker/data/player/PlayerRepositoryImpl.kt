@@ -1,27 +1,28 @@
 package com.example.playlistmaker.data.player
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.player.PlayerState
 import com.example.playlistmaker.domain.player.PlayerStateChangeListener
 import com.example.playlistmaker.domain.player.StatesOfPlaying
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
-import java.util.*
 
 class PlayerRepositoryImpl : PlayerRepository {
 
     companion object {
-        const val AUDIO_DELAY_MILLIS = 100L
+        const val AUDIO_DELAY_MILLIS = 300L
     }
 
     private val mediaPlayer = MediaPlayer()
     private lateinit var listener: PlayerStateChangeListener
     private var statesOfPlaying = StatesOfPlaying.STATE_DEFAULT
-    private val timeRunnable: Runnable = Runnable { duration() }
     var time = "00:00"
-    private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
+    private var audioPlayerJob: Job? = null
 
     override fun preparePlayer(url: String, completion: () -> Unit) {
         if (statesOfPlaying != StatesOfPlaying.STATE_DEFAULT) return
@@ -31,14 +32,11 @@ class PlayerRepositoryImpl : PlayerRepository {
         mediaPlayer.setOnPreparedListener {
             statesOfPlaying = StatesOfPlaying.STATE_PREPARED
             completion()
-
             listener.onChange(PlayerState(statesOfPlaying, time))
+            audioPlayerJob?.start()
         }
         mediaPlayer.setOnCompletionListener {
             statesOfPlaying = StatesOfPlaying.STATE_PREPARED
-            mainThreadHandler?.removeCallbacks(timeRunnable)
-            time = "00:00"
-
             listener.onChange(PlayerState(statesOfPlaying, time))
         }
     }
@@ -46,8 +44,6 @@ class PlayerRepositoryImpl : PlayerRepository {
     override fun play() {
         mediaPlayer.start()
         statesOfPlaying = StatesOfPlaying.STATE_PLAYING
-        duration()
-
         listener.onChange(PlayerState(statesOfPlaying, time))
     }
 
@@ -58,32 +54,26 @@ class PlayerRepositoryImpl : PlayerRepository {
     override fun pause() {
         mediaPlayer.pause()
         statesOfPlaying = StatesOfPlaying.STATE_PAUSED
-        mainThreadHandler?.removeCallbacks(timeRunnable)
-
         listener.onChange(PlayerState(statesOfPlaying, time))
     }
 
     override fun destroy() {
-        if (statesOfPlaying == StatesOfPlaying.STATE_DEFAULT) {
+        if (statesOfPlaying == StatesOfPlaying.STATE_DEFAULT)
             mediaPlayer.release()
-            mainThreadHandler?.removeCallbacks(timeRunnable)
-        }
+        listener.onChange(PlayerState(statesOfPlaying, time))
+        audioPlayerJob?.cancel()
     }
 
-    private fun duration() {
-        if ((statesOfPlaying == StatesOfPlaying.STATE_PLAYING) or (statesOfPlaying == StatesOfPlaying.STATE_PAUSED)) {
-            time =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-            mainThreadHandler?.postDelayed(timeRunnable, AUDIO_DELAY_MILLIS)
-            listener.onChange(PlayerState(statesOfPlaying, time))
-        } else {
-            time = "00:00"
-            mainThreadHandler?.postDelayed(timeRunnable, AUDIO_DELAY_MILLIS)
-            listener.onChange(PlayerState(statesOfPlaying, time))
+    @SuppressLint("SimpleDataFormat")
+    override fun duration(): Flow<String> = flow {
+        val simpleDataFormat = SimpleDateFormat("mm:ss")
+        while (true) {
+            if ((statesOfPlaying == StatesOfPlaying.STATE_PLAYING) or (statesOfPlaying == StatesOfPlaying.STATE_PAUSED)) {
+                emit(simpleDataFormat.format(mediaPlayer.currentPosition))
+            } else {
+                emit("00:00")
+            }
+            delay(AUDIO_DELAY_MILLIS)
         }
-    }
-
-    override fun time(): String {
-        return time
     }
 }
