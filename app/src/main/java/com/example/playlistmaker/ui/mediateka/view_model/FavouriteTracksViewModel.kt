@@ -19,7 +19,7 @@ class FavouriteTracksViewModel(
         const val DELAY_MILLIS = 300L
     }
 
-    var results: MutableLiveData<List<Track>?> = MutableLiveData<List<Track>?>()
+    private val results: MutableLiveData<List<Track>?> = MutableLiveData<List<Track>?>()
 
     fun createFavourite(): LiveData<List<Track>?> {
         viewModelScope.launch {
@@ -38,5 +38,9 @@ class FavouriteTracksViewModel(
 
     fun add(track: Track) {
         searchHistoryInteractor.add(track)
+    }
+
+    fun getResults(): LiveData<List<Track>?> {
+        return results
     }
 }

@@ -4,9 +4,9 @@ import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.flow.Flow
 
 interface FavouriteTrackRepository {
-    fun insertTrack(track: Track)
+    suspend fun insertTrack(track: Track)
 
-    fun deleteTrack(track: Track)
+    suspend fun deleteTrack(track: Track)
 
     fun getFromFavourite(): Flow<List<Track>>
 

@@ -25,7 +25,7 @@ class ViewModelAudioPlayer(
 
     private val playerStateLiveData = MutableLiveData<PlayerScreenState>()
     var time = MutableLiveData("00:00")
-    val isFavourite = MutableLiveData<Boolean>()
+    private val isFavourite = MutableLiveData<Boolean>()
 
     var audioPlayerJob: Job? = null
     var favouriteTrackJob: Job? = null
@@ -83,10 +83,12 @@ class ViewModelAudioPlayer(
     }
 
     fun onFavoriteClicked(track: Track) {
-        if (track.isFavourite)
-            track.trackId?.let { favouriteTrackInteractor.deleteTrack(track) }
-        else
-            track.trackId?.let { favouriteTrackInteractor.insertTrack(track) }
+        viewModelScope.launch {
+            if (track.isFavourite)
+                track.trackId?.let { favouriteTrackInteractor.deleteTrack(track) }
+            else
+                track.trackId?.let { favouriteTrackInteractor.insertTrack(track) }
+        }
     }
 
     fun observeFavourite(track: Track): LiveData<Boolean> {

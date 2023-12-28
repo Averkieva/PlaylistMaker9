@@ -2,6 +2,7 @@ package com.example.playlistmaker.data.db.dao
 
 import androidx.room.*
 import com.example.playlistmaker.data.db.FavouriteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteDao {
@@ -12,7 +13,7 @@ interface FavouriteDao {
     fun deleteTrack(track: FavouriteEntity)
 
     @Query("SELECT * FROM favourite_table ORDER BY durationTime DESC")
-    fun getTrack(): List<FavouriteEntity>
+    fun getTrack(): Flow<List<FavouriteEntity>>
 
     @Query("SELECT * FROM favourite_table WHERE trackId=:trackId")
     fun getTrackId(trackId: Long): FavouriteEntity?

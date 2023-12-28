@@ -55,7 +55,7 @@ class FavouriteTracksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         favouriteTracksViewModel.createFavourite().observe(viewLifecycleOwner) { results ->
-            if (favouriteTracksViewModel.results.value.isNullOrEmpty()) {
+            if (favouriteTracksViewModel.getResults().value.isNullOrEmpty()) {
                 binding.emptyMediateka.visibility = View.VISIBLE
                 binding.favouriteRecyclerView.visibility = View.GONE
                 binding.emptyMediatekaText.visibility = View.VISIBLE
@@ -64,7 +64,7 @@ class FavouriteTracksFragment : Fragment() {
                 binding.emptyMediateka.visibility = View.GONE
                 binding.favouriteRecyclerView.visibility = View.VISIBLE
                 binding.emptyMediatekaText.visibility = View.GONE
-                favouriteTracksAdapter.setIt(favouriteTracksViewModel.results.value!!)
+                favouriteTracksAdapter.setIt(favouriteTracksViewModel.getResults().value!!)
                 favouriteTracksAdapter.notifyDataSetChanged()
             }
         }
