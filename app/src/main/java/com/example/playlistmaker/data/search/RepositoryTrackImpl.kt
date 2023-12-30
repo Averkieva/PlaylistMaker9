@@ -22,21 +22,23 @@ class RepositoryTrackImpl(private val network: NetworkClient) : RepositoryTrack 
                     emit(Resource.Error(ErrorType.CONNECTION_ERROR))
                 }
                 200 -> {
-                    emit(Resource.Success((response as TrackResponse).results.map {
+                    emit(Resource.Success((response as TrackResponse).results.map { track ->
                         Track(
-                            it.trackName,
-                            it.artistName,
+                            track.trackId,
+                            track.trackName,
+                            track.artistName,
                             SimpleDateFormat(
                                 "mm:ss",
                                 Locale.getDefault()
-                            ).format(it.trackTimeMillis),
-                            it.artworkUrl100,
-                            it.trackId,
-                            it.collectionName,
-                            it.releaseDate,
-                            it.primaryGenreName,
-                            it.country,
-                            it.previewUrl
+                            ).format(track.trackTimeMillis),
+                            track.artworkUrl100,
+                            track.collectionName,
+                            track.releaseDate,
+                            track.primaryGenreName,
+                            track.country,
+                            track.previewUrl,
+                            durationTime = System.currentTimeMillis(),
+                            track.isFavourite
                         )
                     }))
                 }

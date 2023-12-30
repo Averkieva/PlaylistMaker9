@@ -18,5 +18,5 @@ val playerModule = module {
         PlayerInteractorImpl(get())
     }
 
-    viewModel { ViewModelAudioPlayer(get()) }
+    viewModel { ViewModelAudioPlayer(get(), get()) }
 }

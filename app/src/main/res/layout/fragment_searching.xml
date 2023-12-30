@@ -10,9 +10,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:orientation="horizontal">
+        android:layout_height="56dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,21 +27,17 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/radius_and_margin_top">
-
+        android:layout_height="52dp">
 
         <EditText
             android:id="@+id/inputEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_top_and_button"
-            android:layout_marginEnd="@dimen/radius_and_margin_top"
-            android:layout_marginBottom="@dimen/margin_top_and_button"
+            android:layout_height="36dp"
+            android:layout_marginHorizontal="@dimen/radius_and_margin_top"
             android:background="@drawable/rounded_edittext"
             android:drawableStart="@drawable/search_2"
-            android:drawablePadding="9dp"
+            android:paddingHorizontal="12dp"
+            android:drawablePadding="8dp"
             app:drawableTint="?attr/colorPrimary"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/input_hint"
@@ -52,21 +46,21 @@
             android:maxLength="60"
             android:maxLines="1"
             android:minHeight="@dimen/margin_start"
-            android:paddingStart="13dp"
+            android:layout_gravity="center"
             android:singleLine="true"
             android:textColor="@color/black_1"
             android:textColorHint="?attr/colorPrimary"
             android:textSize="@dimen/primary_text_size_16sp"
-            app:cornerRadius="18dp" />
+            app:cornerRadius="18dp"
+            android:textCursorDrawable="@drawable/color_cursor"/>
 
         <ImageView
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:paddingEnd="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="30dp"
             android:src="@drawable/cancel"
-            android:visibility="gone"
             app:tint="?attr/colorPrimary" />
     </FrameLayout>
 

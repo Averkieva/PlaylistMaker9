@@ -2,6 +2,7 @@ package com.example.playlistmaker.app
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.di.favouriteDataModule
 import com.example.playlistmaker.di.mediateka_module.mediatekaModule
 import com.example.playlistmaker.di.player_module.playerModule
 import com.example.playlistmaker.di.searching_module.dataModule
@@ -33,8 +34,9 @@ class App : Application(), KoinComponent {
                 searchInteractorModule,
                 viewModelSearchingModule,
                 sharingModule,
-                mediatekaModule
-                )
+                mediatekaModule,
+                favouriteDataModule
+            )
 
         }
         val settingsInteractor = getKoin().get<SettingsInteractor>()
