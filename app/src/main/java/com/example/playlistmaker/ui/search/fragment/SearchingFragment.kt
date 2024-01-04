@@ -12,12 +12,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchingBinding
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.ViewModelSearching
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
@@ -158,10 +158,10 @@ class SearchingFragment : Fragment() {
     }
 
     private fun clicker(item: Track) {
-        viewModelSearching.add(item)
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra("track", item)
-        this.startActivity(intent)
+        val bundle = Bundle()
+        bundle.putParcelable("track", item)
+        val navController = findNavController()
+        navController.navigate(R.id.searchingFragment_to_audioPlayerFragment, bundle)
     }
 
     private fun clickDebounce() {
@@ -275,7 +275,7 @@ class SearchingFragment : Fragment() {
     }
 
     private fun onFocus() {
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty()) {
                 viewModelSearching.provideSearchHistory()
                     .observe(viewLifecycleOwner) { searchHistoryList ->

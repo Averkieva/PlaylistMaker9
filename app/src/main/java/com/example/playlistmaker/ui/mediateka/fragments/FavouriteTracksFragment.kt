@@ -1,16 +1,16 @@
 package com.example.playlistmaker.ui.mediateka.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavouriteTracksBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.mediateka.view_model.FavouriteTracksViewModel
-import com.example.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,9 +22,10 @@ class FavouriteTracksFragment : Fragment() {
 
     private fun clickAdapting(track: Track) {
         favouriteTracksViewModel.add(track)
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra("track", track)
-        this.startActivity(intent)
+        val bundle = Bundle()
+        bundle.putParcelable("track", track)
+        val navController = findNavController()
+        navController.navigate(R.id.audioPlayerFragment, bundle)
     }
 
     private lateinit var binding: FragmentFavouriteTracksBinding
@@ -54,7 +55,7 @@ class FavouriteTracksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        favouriteTracksViewModel.createFavourite().observe(viewLifecycleOwner) { results ->
+        favouriteTracksViewModel.createFavourite().observe(viewLifecycleOwner) {
             if (favouriteTracksViewModel.getResults().value.isNullOrEmpty()) {
                 binding.emptyMediateka.visibility = View.VISIBLE
                 binding.favouriteRecyclerView.visibility = View.GONE

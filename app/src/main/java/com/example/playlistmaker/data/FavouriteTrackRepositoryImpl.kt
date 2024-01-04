@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data
 
 import com.example.playlistmaker.data.converters.TrackDbConvertor
-import com.example.playlistmaker.data.db.AppDatabase
+import com.example.playlistmaker.data.dbFavourite.AppDatabase
 import com.example.playlistmaker.domain.favourite.FavouriteTrackRepository
 import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.flow.Flow

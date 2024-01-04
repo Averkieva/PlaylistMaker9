@@ -1,7 +1,7 @@
-package com.example.playlistmaker.data.db.dao
+package com.example.playlistmaker.data.dbFavourite.dao
 
 import androidx.room.*
-import com.example.playlistmaker.data.db.FavouriteEntity
+import com.example.playlistmaker.data.dbFavourite.FavouriteEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

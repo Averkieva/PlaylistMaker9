@@ -4,16 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable-night/audio_player_fav_button.xml" value="0.1415" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/add_photo.xml" value="0.1415" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/audio_player_add_button.xml" value="0.126" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/audio_player_cover.xml" value="0.126" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/audio_player_fav_button.xml" value="0.126" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/audio_player_no_active_fav.xml" value="0.1415" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/audio_player_play.xml" value="0.126" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/audio_rectangle.xml" value="0.109" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/back.xml" value="0.121" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/bottom_sheet_16.xml" value="0.109" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/cancel.xml" value="0.121" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/clear.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/color_cursor.xml" value="0.1415" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/dot.xml" value="0.1185" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/dotted_frame.xml" value="0.1415" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/ggg.xml" value="0.126" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/indicator.xml" value="0.1415" />
@@ -24,6 +28,7 @@
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/problems_with_loading.xml" value="0.1225" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/round1.xml" value="0.126" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/round2.xml" value="0.126" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/rounded_dashed_corners.xml" value="0.109" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/rounded_edittext.xml" value="0.121" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/search_2.xml" value="0.121" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/drawable/search_placeholder.xml" value="0.1185" />
@@ -33,13 +38,16 @@
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/activity_mediateka.xml" value="0.22" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/activity_searching.xml" value="0.22" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/activity_settings.xml" value="0.22" />
-        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/audio_player.xml" value="0.16666666666666666" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/audio_player.xml" value="0.26584234930448225" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/audio_player_result_of_playlist.xml" value="0.3333333333333333" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/create_playlist.xml" value="0.3333333333333333" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/fragment_bottom_navigation.xml" value="0.1796875" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/fragment_favourite_tracks.xml" value="0.14666666666666667" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/fragment_mediateka.xml" value="0.1796875" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/fragment_playlists.xml" value="0.1796875" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/fragment_searching.xml" value="0.22" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/fragment_settings.xml" value="0.4466666666666667" />
+        <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/result_of_playlist.xml" value="0.16666666666666666" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/result_of_search.xml" value="0.22" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/layout/root.xml" value="0.1796875" />
         <entry key="..\:/android st/PlaylistMaker6/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1796875" />

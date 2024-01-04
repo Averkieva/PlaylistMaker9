@@ -11,15 +11,10 @@
         android:label="fragment_searching"
         tools:layout="@layout/fragment_searching">
         <action
-            android:id="@+id/searchingFragment_to_audioPlayerActivity"
-            app:destination="@id/audioPlayerActivity" />
+            android:id="@+id/searchingFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
     </fragment>
 
-    <activity
-        android:id="@+id/audioPlayerActivity"
-        android:name="com.example.playlistmaker.ui.player.activity.AudioPlayerActivity"
-        android:label="activity_player"
-        tools:layout="@layout/audio_player" />
 
     <fragment
         android:id="@+id/mediatekaFragment"
@@ -27,8 +22,8 @@
         android:label="fragment_mediateka"
         tools:layout="@layout/fragment_mediateka">
         <action
-            android:id="@+id/mediatekaFragment_to_audioPlayerActivity"
-            app:destination="@id/audioPlayerActivity" />
+            android:id="@+id/mediaLibraryFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
     </fragment>
 
     <fragment
@@ -43,7 +38,44 @@
         tools:layout="@layout/fragment_bottom_navigation" />
 
     <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.example.playlistmaker.ui.playlist.fragment.PlaylistFragment"
+        android:label="PlaylistFragment">
+        <action
+            android:id="@+id/playlistFragment_to_createNewPlaylistFragment"
+            app:destination="@id/createNewPlaylistFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.example.playlistmaker.ui.player.fragment.AudioPlayerFragment"
+        android:label="audio_player_fragment"
+        tools:layout="@layout/audio_player">
+        <action
+            android:id="@+id/audioPlayerFragment_to_createNewPlaylistFragment"
+            app:destination="@id/createNewPlaylistFragment" />
+
+        <action
+            android:id="@+id/audioPlayerFragment_to_favouriteTrackFragment"
+            app:destination="@id/favouriteTrackFragment" />
+
+        <action
+            android:id="@+id/audioPlayerFragment_to_searchingFragment"
+            app:destination="@id/searchingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createNewPlaylistFragment"
+        android:name="com.example.playlistmaker.ui.playlist.fragment.CreateNewPlaylistFragment"
+        android:label="CreateNewPlaylistFragment" />
+
+    <fragment
         android:id="@+id/favouriteTrackFragment"
         android:name="com.example.playlistmaker.ui.mediateka.fragments.FavouriteTracksFragment"
-        android:label="favouriteTrackFragment" />
+        android:label="favouriteTrackFragment">
+
+        <action
+            android:id="@+id/favouriteTrackFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+    </fragment>
 </navigation>

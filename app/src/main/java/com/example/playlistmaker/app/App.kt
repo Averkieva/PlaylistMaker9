@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.di.favouriteDataModule
 import com.example.playlistmaker.di.mediateka_module.mediatekaModule
 import com.example.playlistmaker.di.player_module.playerModule
+import com.example.playlistmaker.di.playlist_module.playlistModule
 import com.example.playlistmaker.di.searching_module.dataModule
 import com.example.playlistmaker.di.searching_module.repositoryTrackModule
 import com.example.playlistmaker.di.searching_module.searchInteractorModule
@@ -35,7 +36,8 @@ class App : Application(), KoinComponent {
                 viewModelSearchingModule,
                 sharingModule,
                 mediatekaModule,
-                favouriteDataModule
+                favouriteDataModule,
+                playlistModule
             )
 
         }
