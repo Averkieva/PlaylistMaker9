@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.search.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -64,6 +63,9 @@ class SearchingFragment : Fragment() {
         bottomNavigator = requireActivity().findViewById(R.id.bottomNavigationView)
 
         viewModelSearching.getSearchingLiveData().observe(viewLifecycleOwner) { searchLiveData ->
+
+            //Log.d("+++"," fragment <- viewModel :: ${searchLiveData.toString()}")
+
             when (val states = searchLiveData) {
                 is StatesOfSearching.Loading -> loading()
                 is StatesOfSearching.Search -> baseSearch()
@@ -86,6 +88,7 @@ class SearchingFragment : Fragment() {
             binding.inputEditText.clearFocus()
             viewModelSearching.clearSearchingHistoryList()
         }
+        binding.cancelButton.visibility = View.INVISIBLE
 
         clickDebounce()
 
@@ -118,6 +121,7 @@ class SearchingFragment : Fragment() {
         }
 
         viewModelSearching.provideSearchHistory().observe(viewLifecycleOwner) { value ->
+
             value.ifEmpty { emptyList() }
         }
     }

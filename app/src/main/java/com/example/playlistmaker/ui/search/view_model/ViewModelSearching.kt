@@ -16,15 +16,11 @@ class ViewModelSearching(
     private var searchingHistoryInteractor: SearchHistoryInteractor
 ) : ViewModel() {
 
+    private var searchingLiveData    = MutableLiveData<StatesOfSearching>()
+    private var searchingHistoryList = MutableLiveData<List<Track>>()
+    init { searchingLiveData.postValue(  StatesOfSearching.SearchAndHistory(searchingHistoryInteractor.provideSearchHistory())) }
+
     private var results: MutableLiveData<List<Track>?> = MutableLiveData<List<Track>?>()
-
-    private var searchingLiveData =
-        MutableLiveData<StatesOfSearching>(StatesOfSearching.Search)
-
-    private var searchingHistoryList: MutableLiveData<List<Track>> =
-        MutableLiveData<List<Track>>().apply {
-            value = emptyList()
-        }
 
     fun getSearchingLiveData(): LiveData<StatesOfSearching> {
         return searchingLiveData
