@@ -66,13 +66,16 @@ class ViewModelSearching(
         searchingHistoryInteractor.clearHistory()
     }
 
-    fun provideSearchHistory(): LiveData<List<Track>> {
-        val history = searchingHistoryInteractor.provideSearchHistory()
+    fun provideSearchHistory() {
+
+        searchingLiveData.postValue(  StatesOfSearching.SearchAndHistory(searchingHistoryInteractor.provideSearchHistory()) )
+
+        /*val history = searchingHistoryInteractor.provideSearchHistory()
         searchingHistoryList.value = searchingHistoryInteractor.provideSearchHistory()
         if (history.isNullOrEmpty()) {
             searchingHistoryList.postValue(emptyList())
         }
-        return searchingHistoryList
+        return searchingHistoryList*/
     }
 
     fun clearSearchingHistoryList() {

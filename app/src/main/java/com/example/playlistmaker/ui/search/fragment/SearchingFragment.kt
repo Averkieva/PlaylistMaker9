@@ -60,6 +60,8 @@ class SearchingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //viewModelSearching.provideSearchHistory()
+
         bottomNavigator = requireActivity().findViewById(R.id.bottomNavigationView)
 
         viewModelSearching.getSearchingLiveData().observe(viewLifecycleOwner) { searchLiveData ->
@@ -120,10 +122,10 @@ class SearchingFragment : Fragment() {
             viewModelSearching.clearHistory()
         }
 
-        viewModelSearching.provideSearchHistory().observe(viewLifecycleOwner) { value ->
+       /* viewModelSearching.provideSearchHistory().observe(viewLifecycleOwner) { value ->
 
             value.ifEmpty { emptyList() }
-        }
+        }*/
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -164,6 +166,9 @@ class SearchingFragment : Fragment() {
     private fun clicker(item: Track) {
         val bundle = Bundle()
         bundle.putParcelable("track", item)
+
+        viewModelSearching.add(item)
+
         val navController = findNavController()
         navController.navigate(R.id.searchingFragment_to_audioPlayerFragment, bundle)
     }
@@ -280,7 +285,7 @@ class SearchingFragment : Fragment() {
 
     private fun onFocus() {
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty()) {
+/*            if (hasFocus && binding.inputEditText.text.isEmpty()) {
                 viewModelSearching.provideSearchHistory()
                     .observe(viewLifecycleOwner) { searchHistoryList ->
                         if (searchHistoryList.isNotEmpty()) {
@@ -292,7 +297,7 @@ class SearchingFragment : Fragment() {
                     }
             } else {
                 resultsInvisible()
-            }
+            }*/
         }
     }
 
@@ -302,11 +307,15 @@ class SearchingFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (binding.inputEditText.hasFocus() && s?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
+                if (
+                    binding.inputEditText.hasFocus() && s?.isEmpty() == true
+                    //&& viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false
+                ) {
                     viewModelSearching.clearSearchingHistoryList()
                 } else {
                     resultsInvisible()
                 }
+
                 if (!binding.inputEditText.text.isNullOrEmpty()) {
                     searchDebounce()
                 }
