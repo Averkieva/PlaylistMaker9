@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -63,11 +64,9 @@ class CreateNewPlaylistFragment : Fragment() {
 
             val playlistNameEditText = createPlaylistBinding.namePlaylistEditText.text
             MaterialAlertDialogBuilder(requireContext())
-                .setMessage("Плейлист $playlistNameEditText создан")
-                .setNegativeButton("Оk") { _, _ ->
-                    //обработка "назад"
-                    val back = requireActivity().supportFragmentManager
-                    back.popBackStack()
+                .setMessage(getString(R.string.playlist_created, playlistNameEditText))
+                .setNegativeButton(getString(R.string.ok)) { _, _ ->
+                    findNavController().popBackStack()
                 }
                 .show()
                 .apply {
@@ -149,7 +148,7 @@ class CreateNewPlaylistFragment : Fragment() {
                             resources.getDimensionPixelSize(R.dimen.width_and_height_media)
                         )
                         .into(createPlaylistBinding.dottedFrame)
-                    saveImageToPrivateStorage(uri)
+                    save(uri)
                 } else {
                 }
             }
@@ -164,24 +163,6 @@ class CreateNewPlaylistFragment : Fragment() {
         }
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri) {
-        val filePath =
-            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
-        val fileCount = filePath.listFiles()?.size ?: 0
-        val file = File(filePath, "first_cover_${fileCount + 1}.jpg")
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        createPlaylistBinding.addPhoto.visibility = View.GONE
-        loadingFile = true
-        playlistUri = file.toUri()
-    }
-
     private fun interruptCreation() {
         val title = createPlaylistBinding.namePlaylistEditText.text
         val description = createPlaylistBinding.descriptionPlaylistEditText.text
@@ -191,12 +172,11 @@ class CreateNewPlaylistFragment : Fragment() {
             val textColor = if (isDark) Color.BLACK else Color.WHITE
 
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Завершить создание плейлиста?")
-                .setMessage("Все несохраненные данные будут потеряны")
-                .setNegativeButton("Отмена") { _, _ -> }
-                .setPositiveButton("Завершить") { _, _ ->
-                    val back = requireActivity().supportFragmentManager
-                    back.popBackStack()
+                .setTitle(getString(R.string.end_creation))
+                .setMessage(getString(R.string.lost_data))
+                .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+                .setPositiveButton(getString(R.string.end)) { _, _ ->
+                    findNavController().popBackStack()
                 }
                 .show()
                 .apply {
@@ -204,9 +184,18 @@ class CreateNewPlaylistFragment : Fragment() {
                     getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(textColor)
                 }
         } else {
-            val back = requireActivity().supportFragmentManager
-            back.popBackStack()
+            findNavController().popBackStack()
         }
+    }
+
+    private fun save(uri: Uri) {
+        createPlaylistBinding.addPhoto.visibility = View.GONE
+        loadingFile = true
+        playlistUri = createNewPlaylistViewModel.saveImageToPrivateStorage(uri)
+    }
+
+    companion object {
+        const val quality = 30
     }
 
 }

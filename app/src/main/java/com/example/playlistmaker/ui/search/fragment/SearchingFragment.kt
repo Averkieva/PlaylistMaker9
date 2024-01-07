@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.search.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -42,13 +41,6 @@ class SearchingFragment : Fragment() {
     private var latestSearchingText: String? = null
     private var searchingJob: Job? = null
 
-
-    companion object {
-        const val QUERY = "QUERY"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -86,6 +78,7 @@ class SearchingFragment : Fragment() {
             binding.inputEditText.clearFocus()
             viewModelSearching.clearSearchingHistoryList()
         }
+        binding.cancelButton.visibility = View.INVISIBLE
 
         clickDebounce()
 
@@ -116,15 +109,12 @@ class SearchingFragment : Fragment() {
             resultsInvisible()
             viewModelSearching.clearHistory()
         }
-
-        viewModelSearching.provideSearchHistory().observe(viewLifecycleOwner) { value ->
-            value.ifEmpty { emptyList() }
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(QUERY, binding.inputEditText.text.toString())
+        if (_binding != null)
+            outState.putString(QUERY, binding.inputEditText.text.toString())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -154,12 +144,14 @@ class SearchingFragment : Fragment() {
     }
 
     private fun search() {
-        viewModelSearching.requestSearch(binding.inputEditText.text.toString())
+        if (_binding != null)
+            viewModelSearching.requestSearch(binding.inputEditText.text.toString())
     }
 
     private fun clicker(item: Track) {
         val bundle = Bundle()
         bundle.putParcelable("track", item)
+        viewModelSearching.add(item)
         val navController = findNavController()
         navController.navigate(R.id.searchingFragment_to_audioPlayerFragment, bundle)
     }
@@ -277,17 +269,6 @@ class SearchingFragment : Fragment() {
     private fun onFocus() {
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty()) {
-                viewModelSearching.provideSearchHistory()
-                    .observe(viewLifecycleOwner) { searchHistoryList ->
-                        if (searchHistoryList.isNotEmpty()) {
-                            searchHistoryRecyclerView.visibility = View.VISIBLE
-                        } else {
-                            resultsInvisible()
-                            searchHistoryRecyclerView.visibility = View.GONE
-                        }
-                    }
-            } else {
-                resultsInvisible()
             }
         }
     }
@@ -298,7 +279,7 @@ class SearchingFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (binding.inputEditText.hasFocus() && s?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
+                if (binding.inputEditText.hasFocus() && s?.isEmpty() == true) {
                     viewModelSearching.clearSearchingHistoryList()
                 } else {
                     resultsInvisible()
@@ -342,6 +323,12 @@ class SearchingFragment : Fragment() {
             }
             false
         }
+    }
+
+    companion object {
+        const val QUERY = "QUERY"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
 }

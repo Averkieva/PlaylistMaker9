@@ -9,7 +9,7 @@ import com.example.playlistmaker.domain.search.model.Playlist
 import kotlinx.coroutines.launch
 
 class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
-    val playlistListLiveData: MutableLiveData<List<Playlist>> = MutableLiveData<List<Playlist>>()
+    private val playlistListLiveData: MutableLiveData<List<Playlist>> = MutableLiveData<List<Playlist>>()
 
     fun createPlaylist(): LiveData<List<Playlist>> {
         viewModelScope.launch {
@@ -23,4 +23,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
         }
         return playlistListLiveData
     }
+
+    fun getPlayerStateLiveData(): LiveData<List<Playlist>> = playlistListLiveData
 }

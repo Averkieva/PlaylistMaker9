@@ -12,14 +12,14 @@ import com.example.playlistmaker.databinding.AudioPlayerResultOfPlaylistBinding
 import com.example.playlistmaker.domain.search.model.Playlist
 
 class PlayerAdapter(private var _it: List<Playlist>, private val clickListener: Click) :
-    RecyclerView.Adapter<PlaylistViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
+    RecyclerView.Adapter<PlayerViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
         val view =
             LayoutInflater.from(parent.context)
-        return PlaylistViewHolder(AudioPlayerResultOfPlaylistBinding.inflate(view, parent, false))
+        return PlayerViewHolder(AudioPlayerResultOfPlaylistBinding.inflate(view, parent, false))
     }
 
-    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
         holder.bind(_it[position])
         holder.itemView.setOnClickListener {
             clickListener.onClick(_it[position])
@@ -34,7 +34,7 @@ class PlayerAdapter(private var _it: List<Playlist>, private val clickListener: 
     }
 }
 
-class PlaylistViewHolder(private val binding: AudioPlayerResultOfPlaylistBinding) :
+class PlayerViewHolder(private val binding: AudioPlayerResultOfPlaylistBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     private val corner = itemView.resources.getDimensionPixelSize(R.dimen.icon_padding)
@@ -49,26 +49,14 @@ class PlaylistViewHolder(private val binding: AudioPlayerResultOfPlaylistBinding
                 playlist.trackList.size
             )
 
-        //размер обложки в зависимости от наличия картинки
-
         if (playlist.playlistUri.isEmpty()) {
-            binding.albumCover.setImageResource(R.drawable.search_placeholder)
-            val playlistCover = binding.albumCover.layoutParams
-            playlistCover.width =
-                itemView.resources.getDimensionPixelSize(R.dimen.width_placeholder)
-            playlistCover.height =
-                itemView.resources.getDimensionPixelSize(R.dimen.height_placeholder)
-            binding.albumCover.layoutParams = playlistCover
+            binding.albumCover.setImageResource(R.drawable.placeholder_media)
         } else {
-            val width = itemView.resources.getDimensionPixelSize(R.dimen.width_and_height_picture)
-            val height = itemView.resources.getDimensionPixelSize(R.dimen.width_and_height_picture)
-
             Glide.with(itemView)
                 .load(playlist.playlistUri)
                 .centerCrop()
                 .placeholder(R.drawable.search_placeholder)
                 .transform(CenterCrop(), RoundedCorners(corner))
-                .override(width, height)
                 .into(binding.albumCover)
         }
     }

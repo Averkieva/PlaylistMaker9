@@ -16,10 +16,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = PlaylistFragment()
-    }
-
     private lateinit var binding: FragmentPlaylistsBinding
     private val playlistViewModel by viewModel<PlaylistViewModel>()
     private lateinit var bottomNavigator: BottomNavigationView
@@ -33,7 +29,7 @@ class PlaylistFragment : Fragment() {
         bottomNavigator.visibility = View.VISIBLE
 
         binding.playlists.visibility = View.VISIBLE
-        if (playlistViewModel.playlistListLiveData.value.isNullOrEmpty())
+        if (playlistViewModel.getPlayerStateLiveData().value.isNullOrEmpty())
             binding.playlists.visibility = View.GONE
 
 
@@ -44,7 +40,7 @@ class PlaylistFragment : Fragment() {
 
         val recyclerView = binding.playlists
         recyclerView.adapter =
-            playlistViewModel.playlistListLiveData.value?.let { PlaylistAdapter(it) {} }
+            playlistViewModel.getPlayerStateLiveData().value?.let { PlaylistAdapter(it) {} }
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         return binding.root
@@ -64,6 +60,9 @@ class PlaylistFragment : Fragment() {
                 binding.playlists.adapter = PlaylistAdapter(item) {}
             }
         }
+    }
 
+    companion object {
+        fun newInstance() = PlaylistFragment()
     }
 }

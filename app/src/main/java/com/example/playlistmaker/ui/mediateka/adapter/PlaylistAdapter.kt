@@ -49,26 +49,14 @@ class PlaylistViewHolder(private val binding: ResultOfPlaylistBinding) :
                 playlist.trackList.size
             )
 
-        //размер обложки в зависимости от наличия картинки
-
         if (playlist.playlistUri.isEmpty()) {
-            binding.playlistAlbum.setImageResource(R.drawable.search_placeholder)
-            val playlistCover = binding.playlistAlbum.layoutParams
-            playlistCover.width =
-                itemView.resources.getDimensionPixelSize(R.dimen.width_placeholder)
-            playlistCover.height =
-                itemView.resources.getDimensionPixelSize(R.dimen.height_placeholder)
-            binding.playlistAlbum.layoutParams = playlistCover
+            binding.playlistAlbum.setImageResource(R.drawable.placeholder_media)
         } else {
-            val width = itemView.resources.getDimensionPixelSize(R.dimen.width_and_height_picture)
-            val height = itemView.resources.getDimensionPixelSize(R.dimen.width_and_height_picture)
-
             Glide.with(itemView)
                 .load(playlist.playlistUri)
                 .centerCrop()
                 .placeholder(R.drawable.search_placeholder)
                 .transform(CenterCrop(), RoundedCorners(corner))
-                .override(width, height)
                 .into(binding.playlistAlbum)
         }
     }

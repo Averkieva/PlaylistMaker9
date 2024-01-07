@@ -16,10 +16,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTracksFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = FavouriteTracksFragment()
-    }
-
     private fun clickAdapting(track: Track) {
         favouriteTracksViewModel.add(track)
         val bundle = Bundle()
@@ -69,5 +65,9 @@ class FavouriteTracksFragment : Fragment() {
                 favouriteTracksAdapter.notifyDataSetChanged()
             }
         }
+    }
+
+    companion object {
+        fun newInstance() = FavouriteTracksFragment()
     }
 }

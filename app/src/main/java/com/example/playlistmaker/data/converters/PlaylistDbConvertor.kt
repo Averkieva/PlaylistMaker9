@@ -5,9 +5,7 @@ import com.example.playlistmaker.domain.search.model.Playlist
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class PlaylistDbConvertor {
-
-    private val gson = Gson()
+class PlaylistDbConvertor(private val gson: Gson) {
 
     fun map(playlist: Playlist): PlaylistEntity {
         return PlaylistEntity(

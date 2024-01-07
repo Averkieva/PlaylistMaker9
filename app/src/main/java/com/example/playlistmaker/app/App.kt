@@ -20,10 +20,6 @@ class App : Application(), KoinComponent {
 
     private var flagTheme: Boolean = false
 
-    companion object {
-        lateinit var instance: App
-    }
-
     override fun onCreate() {
         super.onCreate()
         startKoin {
@@ -53,5 +49,9 @@ class App : Application(), KoinComponent {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
+    companion object {
+        lateinit var instance: App
     }
 }

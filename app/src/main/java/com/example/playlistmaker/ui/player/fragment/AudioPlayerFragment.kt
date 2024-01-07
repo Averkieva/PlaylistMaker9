@@ -1,9 +1,12 @@
 package com.example.playlistmaker.ui.player.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +23,7 @@ import com.example.playlistmaker.ui.player.view_model.ViewModelAudioPlayer
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,13 +33,8 @@ class AudioPlayerFragment : Fragment() {
     private lateinit var playerAdapter: PlayerAdapter
     private lateinit var audioPlayerBinding: AudioPlayerBinding
     private lateinit var bottomNavigator: BottomNavigationView
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private val playerViewModel by viewModel<ViewModelAudioPlayer>()
-
-    companion object {
-        const val year = 4
-        const val AUDIO_DELAY_MILLIS = 300L
-        const val KEY_PLAYER_CREATED = "key_player_created"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,9 +48,7 @@ class AudioPlayerFragment : Fragment() {
 
         audioPlayerBinding.audioPlayerBackButton.setOnClickListener {
             bottomNavigator.visibility = View.VISIBLE
-            val back = requireActivity().supportFragmentManager
-            bottomNavigator.visibility = View.VISIBLE
-            back.popBackStack()
+            findNavController().popBackStack()
         }
 
         audioPlayerBinding.createPlaylistButton.setOnClickListener {
@@ -110,8 +107,10 @@ class AudioPlayerFragment : Fragment() {
             audioPlayerBinding.audioPlayerTrackTimer.text = time
         }
 
-        audioPlayerBinding.audioPlayerPlayButton.isEnabled = false
-        audioPlayerBinding.audioPlayerPlayButton.setOnClickListener { playerViewModel.playBackControl() }
+        audioPlayerBinding.audioPlayerPlayButton.isEnabled = true
+        audioPlayerBinding.audioPlayerPlayButton.setOnClickListener {
+            playerViewModel.playBackControl()
+        }
 
         if (savedInstanceState != null) {
             val playerCreated =
@@ -133,8 +132,8 @@ class AudioPlayerFragment : Fragment() {
 
         val bottomSheetContainer = audioPlayerBinding.standardBottomSheet
         val field = audioPlayerBinding.field
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = STATE_HIDDEN
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object :
@@ -143,7 +142,7 @@ class AudioPlayerFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
                 when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    STATE_HIDDEN -> {
                         field.visibility = View.GONE
                     }
 
@@ -167,7 +166,7 @@ class AudioPlayerFragment : Fragment() {
             }
             playerAdapter = PlayerAdapter(adapterData) {
                 clicker(track, it)
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                bottomSheetBehavior.state = STATE_HIDDEN
             }
             recyclerView.adapter = playerAdapter
         }
@@ -219,17 +218,27 @@ class AudioPlayerFragment : Fragment() {
         super.onStop()
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun clicker(track: Track, playlist: Playlist) {
         playerViewModel.add(track, playlist)
         viewLifecycleOwner.lifecycleScope.launch {
             delay(AUDIO_DELAY_MILLIS)
             val playlistName = playlist.playlistName
-            val toastMessage = if (playerViewModel.inserted.value == true) {
-                "Трек уже добавлен в плейлист $playlistName"
+            if(playerViewModel.inserted.value == true){
+            val toastMessage = getString(R.string.track_already_added, playlistName)
+                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
+                bottomSheetBehavior.state = STATE_COLLAPSED
             } else {
-                "Добавлено в плейлист $playlistName"
+                val toastMessage = getString(R.string.track_added, playlistName)
+                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
+                bottomSheetBehavior.state = STATE_HIDDEN
             }
-            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    companion object {
+        const val year = 4
+        const val AUDIO_DELAY_MILLIS = 300L
+        const val KEY_PLAYER_CREATED = "key_player_created"
     }
 }

@@ -11,13 +11,6 @@ class SearchingHistoryImpl(
     private val gson: Gson
 ) : SearchingHistory {
 
-    companion object {
-        const val SEARCH_SHARED_PREFERENCE = "search"
-        const val number_10 = 10
-        const val number_9 = 9
-        const val number_0 = 0
-    }
-
     private var trackHistoryList = ArrayList<Track>()
 
     override fun clearHistory() {
@@ -71,5 +64,12 @@ class SearchingHistoryImpl(
             .clear()
             .putString(SEARCH_SHARED_PREFERENCE, json)
             .apply()
+    }
+
+    companion object {
+        const val SEARCH_SHARED_PREFERENCE = "search"
+        const val number_10 = 10
+        const val number_9 = 9
+        const val number_0 = 0
     }
 }
