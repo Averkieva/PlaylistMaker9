@@ -166,7 +166,6 @@ class AudioPlayerFragment : Fragment() {
             }
             playerAdapter = PlayerAdapter(adapterData) {
                 clicker(track, it)
-                bottomSheetBehavior.state = STATE_HIDDEN
             }
             recyclerView.adapter = playerAdapter
         }

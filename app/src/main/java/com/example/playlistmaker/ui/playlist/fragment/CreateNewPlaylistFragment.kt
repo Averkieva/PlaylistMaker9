@@ -84,7 +84,6 @@ class CreateNewPlaylistFragment : Fragment() {
         createPlaylistBinding.returnButtonCreatePlaylist.setOnClickListener { interruptCreation() }
 
         val textWatcher = object : TextWatcher {
-            //выключаем
             override fun beforeTextChanged(
                 s: CharSequence?,
                 start: Int,
@@ -99,7 +98,6 @@ class CreateNewPlaylistFragment : Fragment() {
                 createPlaylistBinding.createButton.isEnabled = false
             }
 
-            //включаем
             override fun onTextChanged(
                 s: CharSequence?,
                 start: Int,
