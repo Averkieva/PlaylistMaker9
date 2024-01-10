@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start_and_top_5dp"
                 android:layout_marginTop="@dimen/margin_start_and_top_5dp"
-                android:layout_weight="@dimen/margin_top_and_button_2"
+                android:layout_weight="0"
                 android:src="@drawable/dot"
                 app:tint="@color/black_1" />
 

@@ -22,7 +22,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.EditPlaylistBinding
 import com.example.playlistmaker.domain.search.model.Playlist
 import com.example.playlistmaker.ui.playlist.view_model.EditPlaylistViewModel
-import com.example.playlistmaker.ui.playlistInfo.fragment.PlaylistInfoFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -40,10 +39,9 @@ class EditPlaylistFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         editPlaylistBinding = EditPlaylistBinding.inflate(inflater, container, false)
-
+        bottomNavigator = requireActivity().findViewById(R.id.bottomNavigationView)
         bottomNavigator.visibility = View.GONE
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        bottomNavigator = requireActivity().findViewById(R.id.bottomNavigationView)
 
         return editPlaylistBinding.root
     }
@@ -115,8 +113,8 @@ class EditPlaylistFragment : Fragment() {
             Glide.with(this)
                 .load(getImage)
                 .centerCrop()
-                .transform(CenterCrop())
-                .placeholder(R.drawable.placeholder_media)
+                .transform(CenterCrop(),RoundedCorners(resources.getDimensionPixelSize(R.dimen.icon_padding)))
+                .placeholder(R.drawable.audio_player_cover)
                 .override(
                     resources.getDimensionPixelSize(R.dimen.width_and_height_media),
                     resources.getDimensionPixelSize(R.dimen.width_and_height_media)

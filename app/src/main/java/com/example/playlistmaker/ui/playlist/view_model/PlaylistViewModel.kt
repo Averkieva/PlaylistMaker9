@@ -9,7 +9,8 @@ import com.example.playlistmaker.domain.search.model.Playlist
 import kotlinx.coroutines.launch
 
 class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
-    private val playlistListLiveData: MutableLiveData<List<Playlist>> = MutableLiveData<List<Playlist>>()
+    private val playlistListLiveData: MutableLiveData<List<Playlist>> =
+        MutableLiveData<List<Playlist>>()
 
     fun createPlaylist() {
         viewModelScope.launch {

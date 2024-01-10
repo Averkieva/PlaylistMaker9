@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistInfoBinding
 import com.example.playlistmaker.domain.search.model.Playlist
@@ -91,7 +92,7 @@ class PlaylistInfoFragment : Fragment() {
             playlistInfoBinding.playlistInfoTitle.text = playlists.playlistName
             playlistInfoBinding.playlistInfoDescription.text = playlists.playlistDescription ?: ""
             playlistDuration(playlists)
-            playlistInfoBinding.numberOfTracksMenu.text =
+            playlistInfoBinding.playlistInfoNumberOfTracks.text =
                 context?.applicationContext?.resources?.getQuantityString(
                     R.plurals.tracks,
                     playlists.trackList.size,
@@ -132,6 +133,29 @@ class PlaylistInfoFragment : Fragment() {
         )
         playlistInfoViewModel.getTrack(playlist)
         tracksVisibility()
+
+        playlistInfoBinding.titleMenu.text = playlist.playlistName
+        playlistInfoBinding.numberOfTracksMenu.text =
+            context?.applicationContext?.resources?.getQuantityString(
+                R.plurals.tracks,
+                playlist.trackList.size,
+                playlist.trackList.size
+            )
+        val getImage = playlist.playlistUri
+        val isImageAvailable = getImage != "null"
+        val corner = resources.getDimensionPixelSize(R.dimen.cover_radius)
+        playlistInfoBinding.playlistInfoPlaceholder.visibility =
+            if (isImageAvailable) View.GONE else View.VISIBLE
+
+        if (isImageAvailable) {
+            val baseSize = resources.getDimensionPixelSize(R.dimen.width_and_height_media_45dp)
+            Glide.with(this)
+                .load(getImage)
+                .centerCrop()
+                .transform(CenterCrop(), RoundedCorners(corner))
+                .override(baseSize, baseSize)
+                .into(playlistInfoBinding.albumMenu)
+        }
 
         with(playlistInfoBinding.playlistInfoTrackRecyclerView) {
             layoutManager = LinearLayoutManager(requireContext())
