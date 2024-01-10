@@ -5,9 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import android.view.View
 import androidx.core.net.toUri
-import com.example.playlistmaker.domain.playlist.interactor.ImagesRepository
+import com.example.playlistmaker.domain.playlist.repository.ImagesRepository
 import com.example.playlistmaker.ui.playlist.fragment.CreateNewPlaylistFragment
 import java.io.File
 import java.io.FileOutputStream

@@ -9,7 +9,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ResultOfSearchBinding
 import com.example.playlistmaker.domain.search.model.Track
 
-class TrackAdapter(private val clickListener:Click) : RecyclerView.Adapter<TracksViewHolder>() {
+class TrackAdapter(private val clickListener: Click, private val longClickListener: LongClick) :
+    RecyclerView.Adapter<TracksViewHolder>() {
     private var _it: List<Track> = emptyList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view =
@@ -23,6 +24,12 @@ class TrackAdapter(private val clickListener:Click) : RecyclerView.Adapter<Track
             clickListener.onClick(_it[position])
             notifyDataSetChanged()
         }
+
+        holder.itemView.setOnLongClickListener {
+            longClickListener.onLongClick(_it[position])
+            notifyDataSetChanged()
+            return@setOnLongClickListener true
+        }
     }
 
     override fun getItemCount(): Int = _it.size
@@ -30,6 +37,11 @@ class TrackAdapter(private val clickListener:Click) : RecyclerView.Adapter<Track
     fun interface Click {
         fun onClick(track: Track)
     }
+
+    fun interface LongClick {
+        fun onLongClick(track: Track)
+    }
+
 
     fun setIt(it: List<Track>) {
         _it = it
@@ -39,7 +51,8 @@ class TrackAdapter(private val clickListener:Click) : RecyclerView.Adapter<Track
 
 }
 
-class TracksViewHolder(private val binding: ResultOfSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+class TracksViewHolder(private val binding: ResultOfSearchBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     val corner = itemView.resources.getDimensionPixelSize(R.dimen.cover_radius)
 

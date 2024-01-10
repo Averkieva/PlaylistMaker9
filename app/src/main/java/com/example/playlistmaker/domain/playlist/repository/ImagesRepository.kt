@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.playlist.interactor
+package com.example.playlistmaker.domain.playlist.repository
 
 import android.net.Uri
 

@@ -5,6 +5,7 @@ import com.example.playlistmaker.data.converters.PlaylistDbConvertor
 import com.example.playlistmaker.data.dbPlaylist.PlaylistDatabase
 import com.example.playlistmaker.data.playlist.PlaylistRepositoryImpl
 import com.example.playlistmaker.domain.playlist.interactor.*
+import com.example.playlistmaker.domain.playlist.repository.PlaylistRepository
 import com.example.playlistmaker.ui.playlist.view_model.CreateNewPlaylistViewModel
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext

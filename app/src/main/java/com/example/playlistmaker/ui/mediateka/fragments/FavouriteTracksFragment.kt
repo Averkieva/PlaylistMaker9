@@ -29,11 +29,13 @@ class FavouriteTracksFragment : Fragment() {
 
     private var isClickAllowed = true
     private val favouriteTracksAdapter: TrackAdapter by lazy {
-        TrackAdapter {
-            if (isClickAllowed) {
-                clickAdapting(it)
-            }
-        }
+        TrackAdapter(
+            clickListener = {
+                if (isClickAllowed) {
+                    clickAdapting(it)
+                }
+            },
+            longClickListener = {})
     }
 
     override fun onCreateView(
