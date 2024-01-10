@@ -37,10 +37,4 @@
     <dimen name="width_and_height_media">312dp</dimen>
     <dimen name="width_and_height_media_45dp">45dp</dimen>
     <dimen name="margin_start_66dp">66dp</dimen>
-    <dimen name="primary_text_size_24sp">24sp</dimen>
-    <dimen name="primary_text_size_18sp">18sp</dimen>
-    <dimen name="margin_start_and_top_5dp">5dp</dimen>
-    <dimen name="width_50dp">50dp</dimen>
-    <dimen name="bottom_height">150dp</dimen>
-    <dimen name="layout_height_383dp">383dp</dimen>
 </resources>

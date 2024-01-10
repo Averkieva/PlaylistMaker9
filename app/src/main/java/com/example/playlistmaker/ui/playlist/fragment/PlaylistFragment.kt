@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
-import com.example.playlistmaker.domain.search.model.Playlist
 import com.example.playlistmaker.ui.mediateka.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.playlist.view_model.PlaylistViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,7 +18,6 @@ class PlaylistFragment : Fragment() {
 
     private lateinit var binding: FragmentPlaylistsBinding
     private val playlistViewModel by viewModel<PlaylistViewModel>()
-    private lateinit var playlistAdapter: PlaylistAdapter
     private lateinit var bottomNavigator: BottomNavigationView
 
     override fun onCreateView(
@@ -31,57 +29,37 @@ class PlaylistFragment : Fragment() {
         bottomNavigator.visibility = View.VISIBLE
 
         binding.playlists.visibility = View.VISIBLE
+        if (playlistViewModel.getPlayerStateLiveData().value.isNullOrEmpty())
+            binding.playlists.visibility = View.GONE
+
 
         binding.newPlaylistButton.setOnClickListener {
             val navController = findNavController()
             navController.navigate(R.id.createNewPlaylistFragment)
         }
+
+        val recyclerView = binding.playlists
+        recyclerView.adapter =
+            playlistViewModel.getPlayerStateLiveData().value?.let { PlaylistAdapter(it) {} }
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        playlistAdapter = PlaylistAdapter {
-            clicker(it)
-        }
+        playlistViewModel.createPlaylist().observe(viewLifecycleOwner) { item ->
+            val isPlaylistEmpty = item.isNullOrEmpty()
 
-        val recyclerView = binding.playlists
-        recyclerView.adapter =
-            playlistAdapter
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.emptyPlaylist.visibility = if (isPlaylistEmpty) View.VISIBLE else View.GONE
+            binding.playlists.visibility = if (isPlaylistEmpty) View.GONE else View.VISIBLE
+            binding.emptyText.visibility = if (isPlaylistEmpty) View.VISIBLE else View.GONE
 
-        if (playlistViewModel.getPlayerStateLiveData().value.isNullOrEmpty())
-            binding.playlists.visibility = View.GONE
-
-        playlistViewModel.createPlaylist()
-
-        playlistViewModel.getPlayerStateLiveData().observe(viewLifecycleOwner) { item ->
-
-            if (item.isNullOrEmpty()){
-                binding.emptyPlaylist.visibility = View.VISIBLE
-                binding.emptyText.visibility = View.VISIBLE
-                binding.playlists.visibility = View.GONE
-
-                return@observe
-            }
-            else{
-                recyclerView.adapter = playlistAdapter
-                playlistAdapter.setIt(item)
-                binding.emptyPlaylist.visibility = View.GONE
-                binding.emptyText.visibility = View.GONE
-                binding.playlists.visibility = View.VISIBLE
-
-                return@observe
+            if (!isPlaylistEmpty) {
+                binding.playlists.adapter = PlaylistAdapter(item) {}
             }
         }
-    }
-
-    private fun clicker(playlist: Playlist) {
-        val bundle = Bundle()
-        bundle.putParcelable("playlist", playlist)
-        val navController = findNavController()
-        navController.navigate(R.id.mediatekaFragment_to_playlistInfoFragment, bundle)
     }
 
     companion object {

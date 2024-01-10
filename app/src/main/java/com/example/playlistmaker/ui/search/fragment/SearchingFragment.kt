@@ -86,25 +86,20 @@ class SearchingFragment : Fragment() {
 
         enterSearching()
 
-        tracksAdapter = TrackAdapter(
-            clickListener = {
-                if (isClickAllowed) {
-                    clicker(it)
-                }
-            },
-            longClickListener = {})
+        tracksAdapter = TrackAdapter {
+            if (isClickAllowed)
+                clicker(it)
+        }
 
         recyclerView = binding.resultRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = tracksAdapter
 
-        searchHistoryAdapter = TrackAdapter(
-            clickListener = {
-                if (isClickAllowed) {
-                    clicker(it)
-                }
-            },
-            longClickListener = {})
+        searchHistoryAdapter = TrackAdapter {
+            if (isClickAllowed) {
+                clicker(it)
+            }
+        }
 
         searchHistoryRecyclerView = binding.historyRecyclerView
         searchHistoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -244,13 +239,8 @@ class SearchingFragment : Fragment() {
     private fun searchAndHistory(history: List<Track>) {
         searchHistoryAdapter.setIt(history)
         searchHistoryAdapter.notifyDataSetChanged()
-        if (history.isEmpty()) {
-            binding.searchedText.visibility = View.GONE
-            binding.clearHistoryButton.visibility = View.GONE
-        } else {
-            binding.searchedText.visibility = View.VISIBLE
-            binding.clearHistoryButton.visibility = View.VISIBLE
-        }
+        binding.searchedText.visibility = View.VISIBLE
+        binding.clearHistoryButton.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         searchHistoryRecyclerView.visibility = View.VISIBLE
         binding.nothingFoundPicture.visibility = View.GONE

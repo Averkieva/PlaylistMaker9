@@ -6,7 +6,7 @@ import com.example.playlistmaker.data.search.history.SearchingHistoryImpl.Compan
 import com.example.playlistmaker.data.search.request_response.ITunesApi
 import com.example.playlistmaker.data.search.request_response.NetworkClient
 import com.example.playlistmaker.data.search.request_response.RetrofitNetworkClient
-import com.example.playlistmaker.domain.playlist.repository.ImagesRepository
+import com.example.playlistmaker.domain.playlist.interactor.ImagesRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
