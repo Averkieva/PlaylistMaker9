@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
     private val playlistListLiveData: MutableLiveData<List<Playlist>> = MutableLiveData<List<Playlist>>()
 
-    fun createPlaylist(): LiveData<List<Playlist>> {
+    fun createPlaylist() {
         viewModelScope.launch {
             playlistInteractor.getPlaylist().collect {
                 if (it.isNotEmpty()) {
@@ -21,7 +21,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
                 }
             }
         }
-        return playlistListLiveData
     }
 
     fun getPlayerStateLiveData(): LiveData<List<Playlist>> = playlistListLiveData

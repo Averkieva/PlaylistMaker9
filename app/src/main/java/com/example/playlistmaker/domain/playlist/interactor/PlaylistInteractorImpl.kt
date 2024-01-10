@@ -20,4 +20,16 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
     override fun edit(track: Track, playlist: Playlist) {
         repository.edit(track, playlist)
     }
+
+    override fun deletePlaylist(item: Playlist) {
+        repository.deletePlaylist(item)
+    }
+
+    override fun searchPlaylist(searchId: Int): Flow<Playlist> {
+        return repository.searchPlaylist(searchId)
+    }
+
+    override fun save(playlist: Playlist, title: String, description: String?, uri: String) {
+        repository.save(playlist, title, description, uri)
+    }
 }
