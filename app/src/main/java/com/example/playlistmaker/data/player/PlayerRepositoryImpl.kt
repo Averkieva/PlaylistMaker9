@@ -14,10 +14,6 @@ import java.text.SimpleDateFormat
 
 class PlayerRepositoryImpl : PlayerRepository {
 
-    companion object {
-        const val AUDIO_DELAY_MILLIS = 300L
-    }
-
     private val mediaPlayer = MediaPlayer()
     private lateinit var listener: PlayerStateChangeListener
     private var statesOfPlaying = StatesOfPlaying.STATE_DEFAULT
@@ -75,5 +71,9 @@ class PlayerRepositoryImpl : PlayerRepository {
             }
             delay(AUDIO_DELAY_MILLIS)
         }
+    }
+
+    companion object {
+        const val AUDIO_DELAY_MILLIS = 300L
     }
 }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.di.favouriteDataModule
 import com.example.playlistmaker.di.mediateka_module.mediatekaModule
 import com.example.playlistmaker.di.player_module.playerModule
+import com.example.playlistmaker.di.playlist_module.playlistModule
 import com.example.playlistmaker.di.searching_module.dataModule
 import com.example.playlistmaker.di.searching_module.repositoryTrackModule
 import com.example.playlistmaker.di.searching_module.searchInteractorModule
@@ -19,10 +20,6 @@ class App : Application(), KoinComponent {
 
     private var flagTheme: Boolean = false
 
-    companion object {
-        lateinit var instance: App
-    }
-
     override fun onCreate() {
         super.onCreate()
         startKoin {
@@ -35,7 +32,8 @@ class App : Application(), KoinComponent {
                 viewModelSearchingModule,
                 sharingModule,
                 mediatekaModule,
-                favouriteDataModule
+                favouriteDataModule,
+                playlistModule
             )
 
         }
@@ -51,5 +49,9 @@ class App : Application(), KoinComponent {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
+    companion object {
+        lateinit var instance: App
     }
 }

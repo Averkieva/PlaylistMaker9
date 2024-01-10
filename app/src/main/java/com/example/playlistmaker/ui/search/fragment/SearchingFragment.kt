@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.search.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,12 +11,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchingBinding
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.ViewModelSearching
 import com.example.playlistmaker.ui.search.view_model.states.StatesOfSearching
@@ -41,13 +40,6 @@ class SearchingFragment : Fragment() {
     private val viewModelSearching by viewModel<ViewModelSearching>()
     private var latestSearchingText: String? = null
     private var searchingJob: Job? = null
-
-
-    companion object {
-        const val QUERY = "QUERY"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +78,7 @@ class SearchingFragment : Fragment() {
             binding.inputEditText.clearFocus()
             viewModelSearching.clearSearchingHistoryList()
         }
+        binding.cancelButton.visibility = View.INVISIBLE
 
         clickDebounce()
 
@@ -116,15 +109,12 @@ class SearchingFragment : Fragment() {
             resultsInvisible()
             viewModelSearching.clearHistory()
         }
-
-        viewModelSearching.provideSearchHistory().observe(viewLifecycleOwner) { value ->
-            value.ifEmpty { emptyList() }
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(QUERY, binding.inputEditText.text.toString())
+        if (_binding != null)
+            outState.putString(QUERY, binding.inputEditText.text.toString())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -154,14 +144,16 @@ class SearchingFragment : Fragment() {
     }
 
     private fun search() {
-        viewModelSearching.requestSearch(binding.inputEditText.text.toString())
+        if (_binding != null)
+            viewModelSearching.requestSearch(binding.inputEditText.text.toString())
     }
 
     private fun clicker(item: Track) {
+        val bundle = Bundle()
+        bundle.putParcelable("track", item)
         viewModelSearching.add(item)
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra("track", item)
-        this.startActivity(intent)
+        val navController = findNavController()
+        navController.navigate(R.id.searchingFragment_to_audioPlayerFragment, bundle)
     }
 
     private fun clickDebounce() {
@@ -275,19 +267,8 @@ class SearchingFragment : Fragment() {
     }
 
     private fun onFocus() {
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty()) {
-                viewModelSearching.provideSearchHistory()
-                    .observe(viewLifecycleOwner) { searchHistoryList ->
-                        if (searchHistoryList.isNotEmpty()) {
-                            searchHistoryRecyclerView.visibility = View.VISIBLE
-                        } else {
-                            resultsInvisible()
-                            searchHistoryRecyclerView.visibility = View.GONE
-                        }
-                    }
-            } else {
-                resultsInvisible()
             }
         }
     }
@@ -298,7 +279,7 @@ class SearchingFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (binding.inputEditText.hasFocus() && s?.isEmpty() == true && viewModelSearching.provideSearchHistory().value?.isNotEmpty() ?: false) {
+                if (binding.inputEditText.hasFocus() && s?.isEmpty() == true) {
                     viewModelSearching.clearSearchingHistoryList()
                 } else {
                     resultsInvisible()
@@ -342,6 +323,12 @@ class SearchingFragment : Fragment() {
             }
             false
         }
+    }
+
+    companion object {
+        const val QUERY = "QUERY"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
 }

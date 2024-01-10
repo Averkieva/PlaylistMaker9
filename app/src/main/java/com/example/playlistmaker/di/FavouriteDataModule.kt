@@ -2,7 +2,8 @@ package com.example.playlistmaker.di
 
 import androidx.room.Room
 import com.example.playlistmaker.data.FavouriteTrackRepositoryImpl
-import com.example.playlistmaker.data.db.AppDatabase
+import com.example.playlistmaker.data.dbFavourite.AppDatabase
+import com.example.playlistmaker.data.dbTrack.TrackDatabase
 import com.example.playlistmaker.domain.favourite.FavouriteTrackInteractor
 import com.example.playlistmaker.domain.favourite.FavouriteTrackInteractorImpl
 import com.example.playlistmaker.domain.favourite.FavouriteTrackRepository
@@ -22,4 +23,9 @@ val favouriteDataModule = module {
 
     single<FavouriteTrackInteractor> { FavouriteTrackInteractorImpl(get()) }
 
+    single {
+        Room.databaseBuilder(androidContext(), TrackDatabase::class.java, "tracks_in_table")
+            .allowMainThreadQueries()
+            .build()
+    }
 }

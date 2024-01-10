@@ -1,10 +1,12 @@
 package com.example.playlistmaker.di.searching_module
 
 import android.content.Context
+import com.example.playlistmaker.data.playlist.ImagesRepositoryImpl
 import com.example.playlistmaker.data.search.history.SearchingHistoryImpl.Companion.SEARCH_SHARED_PREFERENCE
 import com.example.playlistmaker.data.search.request_response.ITunesApi
 import com.example.playlistmaker.data.search.request_response.NetworkClient
 import com.example.playlistmaker.data.search.request_response.RetrofitNetworkClient
+import com.example.playlistmaker.domain.playlist.interactor.ImagesRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -32,4 +34,6 @@ val dataModule = module {
     single<NetworkClient> {
         RetrofitNetworkClient(get(), get())
     }
+
+    single<ImagesRepository> { ImagesRepositoryImpl(get()) }
 }

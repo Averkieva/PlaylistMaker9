@@ -15,10 +15,6 @@ class FavouriteTracksViewModel(
     private val searchHistoryInteractor: SearchHistoryInteractor
 ) : ViewModel() {
 
-    companion object {
-        const val DELAY_MILLIS = 300L
-    }
-
     private val results: MutableLiveData<List<Track>?> = MutableLiveData<List<Track>?>()
 
     fun createFavourite(): LiveData<List<Track>?> {
@@ -42,5 +38,9 @@ class FavouriteTracksViewModel(
 
     fun getResults(): LiveData<List<Track>?> {
         return results
+    }
+
+    companion object {
+        const val DELAY_MILLIS = 300L
     }
 }

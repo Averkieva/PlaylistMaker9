@@ -1,6 +1,6 @@
 package com.example.playlistmaker.data.converters
 
-import com.example.playlistmaker.data.db.FavouriteEntity
+import com.example.playlistmaker.data.dbFavourite.FavouriteEntity
 import com.example.playlistmaker.domain.search.model.Track
 
 class TrackDbConvertor {

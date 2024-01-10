@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/for_text">
+
+    <ImageView
+        android:id="@+id/album_cover"
+        android:layout_width="@dimen/width_and_height_media_45dp"
+        android:layout_height="@dimen/width_and_height_media_45dp"
+        android:layout_marginStart="@dimen/paddingRight"
+        android:layout_marginTop="@dimen/icon_padding"
+        android:src="@drawable/search_placeholder" />
+
+    <TextView
+        android:id="@+id/title_album"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_start_66dp"
+        android:layout_marginTop="@dimen/margin_top_mediateka"
+        android:layout_marginEnd="@dimen/margin_top_play_button"
+        android:fontFamily="@font/ys_display_regular"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/primary_text_size_16sp"
+        tools:text="@string/albumName" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_top_play_button">
+
+        <TextView
+            android:id="@+id/number_of_tracks"
+            android:layout_width="@dimen/margin_top_and_button_2"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_66dp"
+            android:layout_marginTop="@dimen/margin_top_play_button"
+            android:layout_weight="1"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="?attr/colorSecondary"
+            android:textSize="@dimen/primary_text_size_11sp"
+            tools:text="@string/number_of_tracks" />
+    </LinearLayout>
+</FrameLayout>
