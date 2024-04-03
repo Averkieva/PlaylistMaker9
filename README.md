@@ -23,4 +23,5 @@
 
 Фотографии из приложения
 ========================
-![Альтернативный текст](https://disk.yandex.ru/client/disk?idApp=client&dialog=slider&idDialog=%2Fdisk%2Fphoto_10_2024-04-03_21-30-25.jpg)
+![photo_10_2024-04-03_21-30-25](https://github.com/Averkieva/PlaylistMaker9/assets/118860113/b97f0b5a-ea49-4a4f-94e4-baed3fe49bb2)
+
